@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: Jobs-App API
+  contact: {}
+  version: "1.0"
+servers:
+  - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+    variables: {}
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register User
+      operationId: RegisterUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserRequest"
+            example:
+              name: john
+              email: john@example.com
+              password: "123123"
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login User
+      operationId: LoginUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRequest"
+            example:
+              email: john@example.com
+              password: "123123"
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+  /jobs:
+    post:
+      tags:
+        - Jobs
+      summary: Create Job
+      operationId: CreateJob
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateJobRequest"
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+    get:
+      tags:
+        - Jobs
+      summary: Get All Jobs
+      operationId: GetAllJobs
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+  /jobs/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The job ID
+    get:
+      tags:
+        - Jobs
+      summary: Get Single Job
+      operationId: GetSingleJob
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+    patch:
+      tags:
+        - Jobs
+      summary: Update Job
+      operationId: UpdateJob
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateJobRequest"
+            example:
+              company: IT solutions
+              position: Frontend developer
+              url: http://itsolutions.com/jobs/34hui3443jiog
+              applicationDate: "2022-06-11"
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+    delete:
+      tags:
+        - Jobs
+      summary: Delete Job
+      operationId: DeleteJob
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+      servers:
+        - url: https://jobs-app-backend-suchislif3.herokuapp.com/api/v1
+          variables: {}
+components:
+  schemas:
+    RegisterUserRequest:
+      title: RegisterUserRequest
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: john
+        email: john@example.com
+        password: "123123"
+    LoginUserRequest:
+      title: LoginUserRequest
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: john@example.com
+        password: "123123"
+    CreateJobRequest:
+      title: CreateJobRequest
+      required:
+        - company
+        - position
+        - url
+        - applicationDate
+      type: object
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+        url:
+          type: string
+        applicationDate:
+          type: string
+      example:
+        company: IT solutions
+        position: Frontend developer
+        url: http://itsolutions.com/jobs/34hui3443jiog
+        applicationDate: "2022-06-08"
+    UpdateJobRequest:
+      title: UpdateJobRequest
+      required:
+        - company
+        - position
+        - applicationDate
+      type: object
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+        applicationDate:
+          type: string
+      example:
+        company: IT solutions
+        position: Frontend developer
+        url: http://itsolutions.com/jobs/34hui3443jiog
+        applicationDate: "2022-06-11"
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+  - name: Auth
+    description: ""
+  - name: Jobs
+    description: ""
