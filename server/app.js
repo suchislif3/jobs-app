@@ -4,8 +4,8 @@ import express from "express";
 dotenv.config();
 const app = express();
 
-// connectDB
 import connectDB from "./db/connect.js";
+import authenticationMiddleware from "./middleware/authentication.js";
 
 // routers
 import authRouter from "./routes/auth.route.js";
@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   res.send("jobs api");
 });
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/jobs", jobsRouter);
+app.use("/api/v1/jobs", authenticationMiddleware, jobsRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
