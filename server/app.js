@@ -1,7 +1,14 @@
 import dotenv from "dotenv";
-import "express-async-errors";
-import express from "express";
 dotenv.config();
+import "express-async-errors";
+
+// extra security packages
+import helmet from "helmet";
+import cors from "cors";
+import xss from "xss-clean";
+import rateLimiter from "express-rate-limit";
+
+import express from "express";
 const app = express();
 
 import connectDB from "./db/connect.js";
@@ -15,14 +22,23 @@ import jobsRouter from "./routes/jobs.route.js";
 import notFoundMiddleware from "./middleware/notFound.js";
 import errorHandlerMiddleware from "./middleware/errorHandler.js";
 
+app.set("trust proxy", 1);
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+  })
+);
 app.use(express.json());
-
-// extra packages
+app.use(helmet());
+app.use(cors());
+app.use(xss());
 
 // routes
 app.get("/", (req, res) => {
   res.send("jobs api");
 });
+app.get("/ip", (req, res) => res.send(req.ip));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", authenticationMiddleware, jobsRouter);
 
