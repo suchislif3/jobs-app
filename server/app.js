@@ -8,6 +8,11 @@ import cors from "cors";
 import xss from "xss-clean";
 import rateLimiter from "express-rate-limit";
 
+// swagger
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+const swaggerDocument = YAML.load("./swagger.yaml");
+
 import express from "express";
 const app = express();
 
@@ -36,9 +41,12 @@ app.use(xss());
 
 // routes
 app.get("/", (req, res) => {
-  res.send("jobs api");
+  res.send(
+    "<h1>Welcome to Jobs-App API</h1><a href='/api-docs'>Documentation</a>"
+  );
 });
-app.get("/ip", (req, res) => res.send(req.ip));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.get("/ip", (req, res) => res.send(req.ip)); // for finding out the number of proxies between user and server
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", authenticationMiddleware, jobsRouter);
 
