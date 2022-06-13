@@ -13,6 +13,7 @@ export const GlobalStyle = createGlobalStyle`
     font-family: ${({ theme }) => theme.typography.fontFamily.main};
     font-size: ${({ theme }) => theme.typography.fontSize.main};
     font-weight: ${({ theme }) => theme.typography.fontWeight.main};
+    line-height: 1.75;
     border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
@@ -52,5 +53,14 @@ export const GlobalStyle = createGlobalStyle`
   
   a {
     text-decoration: none;
+  }
+
+  label {
+    display: block;
+    text-transform: capitalize;
+  }
+
+  .error {
+    color: ${({ theme }) => theme.palette.error};
   }
 `;

@@ -1,7 +1,16 @@
 export const theme = {
+  breakpoints: {
+    xs: "0",
+    sm: "600px",
+    md: "900px",
+    lg: "1200px",
+    xl: "1536px",
+  },
   palette: {
     background: "#f5f5f5",
     text: "#424242",
+    error: "#d62d2d",
+    success: "#308534",
     common: {
       black: "#000000",
       white: "#ffffff",
@@ -13,12 +22,6 @@ export const theme = {
     secondary: {
       main: "#7E88BC",
       contrastText: "#ffffff",
-    },
-    error: {
-      main: "#d62d2d",
-    },
-    success: {
-      main: "#308534",
     },
     grey: {
       g50: "#fafafa",
@@ -57,7 +60,7 @@ export const theme = {
     },
     fontWeight: {
       main: 400,
-      heading: 400,
+      heading: 700,
     },
   },
 };
