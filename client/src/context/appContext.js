@@ -59,7 +59,7 @@ export const AppProvider = ({ children }) => {
     } catch (err) {
       dispatch({
         type: AUTH_USER_ERROR,
-        payload: err.response.data.msg || "Something went wrong.",
+        payload: err.response.data?.msg || "Something went wrong.",
       });
     }
   };
@@ -72,12 +72,15 @@ export const AppProvider = ({ children }) => {
   const fetchJobs = async () => {
     dispatch({ type: START_LOADING });
     try {
+      console.log("FETCHING");
       const { data } = await API.get(`/jobs`);
+      console.log({ data });
       dispatch({ type: FETCH_JOBS_SUCCESS, payload: data.jobs });
     } catch (err) {
+      console.log(err);
       dispatch({
         type: FETCH_JOBS_ERROR,
-        payload: err.response.data.msg || "Fetching data failed.",
+        payload: err.response.data?.msg || "Fetching data failed.",
       });
     }
   };

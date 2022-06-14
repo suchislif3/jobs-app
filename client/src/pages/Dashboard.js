@@ -1,9 +1,10 @@
-import React from "react";
+import Jobs from "../components/Jobs";
 
 const Dashboard = () => {
   return (
     <>
-      <div>Dashboard</div>
+      <h1>Dashboard</h1>
+      <Jobs />
     </>
   );
 };
