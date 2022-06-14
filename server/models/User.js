@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please provide name"],
-    minLength: 3,
-    maxLength: 50,
+    minLength: [3, "Name must be at least 3 characters long"],
+    maxLength: [50, "Name can be a maximum of 50 characters long"],
   },
   email: {
     type: String,
@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please provide password"],
-    minLength: 6,
+    minLength: [6, "Password must be at least 6 characters long"],
   },
 });
 
@@ -38,7 +38,7 @@ UserSchema.methods.createJwt = function () {
     { userId: this._id, name: this.name },
     process.env.JWT_SECRET,
     {
-      expiresIn: process.env.JWT_LIFETIME,
+      expiresIn: "1h",
     }
   );
 };
