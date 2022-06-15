@@ -1,26 +1,26 @@
-import React, { useEffect } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useTheme } from "styled-components";
 
 import { useGlobalContext } from "../context/appContext";
 
 const Jobs = () => {
-  const { jobs, isLoading } = useGlobalContext();
+  const { jobs, isLoading, errorMessage } = useGlobalContext();
   const theme = useTheme();
-
-  const { fetchJobs } = useGlobalContext();
-
-  useEffect(() => {
-    fetchJobs();
-  }, []);
 
   return (
     <div>
       <h3>Jobs</h3>
-      {!jobs.length && !isLoading ? (
+      {errorMessage ? (
+        <p className="error">{errorMessage}</p>
+      ) : !jobs.length && !isLoading ? (
         <p>You have no job applications yet.</p>
       ) : (
-        <p>your job applications</p>
+        <div>
+          <h4>your job applications</h4>
+          {jobs.map((job) => (
+            <div key={job}>{job}</div>
+          ))}
+        </div>
       )}
       <SyncLoader
         loading={isLoading}

@@ -8,8 +8,14 @@ import { GlobalStyle } from "./styles/Global.styles";
 import { MainContainer } from "./styles/App.styles";
 
 import Navbar from "./components/Navbar";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import { Auth, Dashboard, Edit, Home, NotFound } from "./pages";
+import {
+  Auth,
+  Dashboard,
+  Edit,
+  Home,
+  NotFound,
+  ProtectedRoutes,
+} from "./pages";
 import { useGlobalContext } from "./context/appContext";
 
 const App = () => {
