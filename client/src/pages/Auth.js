@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useGlobalContext } from "../context/appContext";
 import FormInput from "../components/FormInput";
@@ -37,7 +37,7 @@ const Auth = () => {
     <Page>
       <form onSubmit={handleSubmit}>
         <h4>{isRegister ? "Register" : "Login"}</h4>
-        {errorMessage && <div className="error">{errorMessage}</div>}
+        {errorMessage && <p className="error">{errorMessage}</p>}
         {isRegister && (
           <FormInput
             name="name"

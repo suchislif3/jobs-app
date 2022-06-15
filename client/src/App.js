@@ -8,11 +8,18 @@ import { GlobalStyle } from "./styles/Global.styles";
 import { MainContainer } from "./styles/App.styles";
 
 import Navbar from "./components/Navbar";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import PublicRoutes from "./components/PublicRoutes";
-import { Auth, Dashboard, Edit, Home, NotFound } from "./pages";
+import {
+  Auth,
+  Dashboard,
+  Edit,
+  Home,
+  NotFound,
+  ProtectedRoutes,
+} from "./pages";
+import { useGlobalContext } from "./context/appContext";
 
 const App = () => {
+  const { user } = useGlobalContext();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -21,11 +28,17 @@ const App = () => {
           <MainContainer>
             <Navbar />
             <Routes>
-              <Route element={<PublicRoutes />}>
+              <Route
+                element={
+                  <ProtectedRoutes isAllowed={!user} redirect="/dashboard" />
+                }
+              >
                 <Route path="/" element={<Home />} />
                 <Route path="/auth" element={<Auth />} />
               </Route>
-              <Route element={<ProtectedRoutes />}>
+              <Route
+                element={<ProtectedRoutes isAllowed={user} redirect="/auth" />}
+              >
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/edit/:id" element={<Edit />} />
               </Route>

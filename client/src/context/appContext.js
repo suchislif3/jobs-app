@@ -25,6 +25,10 @@ const AppContext = React.createContext();
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const startLoading = () => {
+    if (!state.isLoading) dispatch({ type: START_LOADING });
+  };
+
   const storeUserInLocalStorage = (data) => {
     localStorage.setItem(
       "user",
@@ -37,7 +41,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const register = async (userData) => {
-    dispatch({ type: START_LOADING });
+    startLoading();
     try {
       const { data } = await API.post(`/auth/register`, userData);
       dispatch({ type: AUTH_USER_SUCCESS, payload: data.user.name });
@@ -51,7 +55,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const login = async (userData) => {
-    dispatch({ type: START_LOADING });
+    startLoading();
     try {
       const { data } = await API.post(`/auth/login`, userData);
       dispatch({ type: AUTH_USER_SUCCESS, payload: data.user.name });
@@ -59,7 +63,7 @@ export const AppProvider = ({ children }) => {
     } catch (err) {
       dispatch({
         type: AUTH_USER_ERROR,
-        payload: err.response.data.msg || "Something went wrong.",
+        payload: err.response.data?.msg || "Something went wrong.",
       });
     }
   };
@@ -70,14 +74,14 @@ export const AppProvider = ({ children }) => {
   };
 
   const fetchJobs = async () => {
-    dispatch({ type: START_LOADING });
+    startLoading();
     try {
       const { data } = await API.get(`/jobs`);
       dispatch({ type: FETCH_JOBS_SUCCESS, payload: data.jobs });
     } catch (err) {
       dispatch({
         type: FETCH_JOBS_ERROR,
-        payload: err.response.data.msg || "Fetching data failed.",
+        payload: err.response.data?.msg || "Fetching data failed.",
       });
     }
   };
