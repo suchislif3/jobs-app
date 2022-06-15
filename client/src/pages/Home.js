@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { Page } from "../styles/App.styles";
+import main from "../assets/main.svg";
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
         </p>
         <Link to="/auth">Login / Register</Link>
       </div>
+      <img src={main} alt="job interview" />
     </Page>
   );
 };
