@@ -41,6 +41,7 @@ const Auth = () => {
         {isRegister && (
           <FormInput
             name="name"
+            label="Name"
             value={formData.name}
             handleChange={handleChange}
           />
@@ -48,12 +49,14 @@ const Auth = () => {
         <FormInput
           name="email"
           type="email"
+          label="Email"
           value={formData.email}
           handleChange={handleChange}
         />
         <FormInput
           name="password"
           type="password"
+          label="Password"
           value={formData.password}
           handleChange={handleChange}
         />

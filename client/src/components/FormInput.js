@@ -1,13 +1,12 @@
-const FormInput = ({ name, type, value, placeholder, handleChange }) => {
+const FormInput = ({ name, label, type, value, handleChange }) => {
   return (
     <div>
-      <label htmlFor={name}>{name}</label>
+      <label htmlFor={name}>{label}</label>
       <input
         name={name}
         type={type}
         value={value}
         id={name}
-        placeholder={placeholder}
         onChange={handleChange}
       />
     </div>
