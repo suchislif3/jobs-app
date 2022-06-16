@@ -35,6 +35,11 @@ export const theme = {
       g800: "#424242",
       g900: "#212121",
     },
+    jobStatus: {
+      pending: "#f2f1a0",
+      interview: "#b9f582",
+      declined: "#f79186",
+    },
   },
   shape: {
     borderRadius: "5px",

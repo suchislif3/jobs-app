@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
+import JobForm from "../components/JobForm";
 import Jobs from "../components/Jobs";
 import { useGlobalContext } from "../context/appContext";
 
 const Dashboard = () => {
-  const { fetchJobs } = useGlobalContext();
+  const { fetchJobs, errorMessage } = useGlobalContext();
   const isInitRender = useRef(true);
 
   useEffect(() => {
@@ -15,7 +16,8 @@ const Dashboard = () => {
 
   return (
     <>
-      <h1>Dashboard</h1>
+      {errorMessage && <p className="error">{errorMessage}</p>}
+      <JobForm />
       <Jobs />
     </>
   );

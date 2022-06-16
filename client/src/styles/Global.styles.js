@@ -57,7 +57,6 @@ export const GlobalStyle = createGlobalStyle`
 
   label {
     display: block;
-    text-transform: capitalize;
   }
 
   .error {

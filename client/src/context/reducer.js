@@ -7,6 +7,10 @@ import {
   SET_ERROR_MESSAGE,
   FETCH_JOBS_SUCCESS,
   FETCH_JOBS_ERROR,
+  CREATE_JOB_SUCCESS,
+  CREATE_JOB_ERROR,
+  DELETE_JOB_SUCCESS,
+  DELETE_JOB_ERROR,
 } from "./actionTypes";
 
 const reducer = (state, action) => {
@@ -34,7 +38,7 @@ const reducer = (state, action) => {
         ...state,
         user: null,
         errorMessage: null,
-        jobs: [],
+        jobs: null,
       };
     case SET_ERROR_MESSAGE:
       return {
@@ -49,6 +53,32 @@ const reducer = (state, action) => {
         jobs: action.payload,
       };
     case FETCH_JOBS_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        errorMessage: action.payload,
+      };
+    case CREATE_JOB_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        jobs: [action.payload, ...state.jobs],
+        errorMessage: null,
+      };
+    case CREATE_JOB_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        errorMessage: action.payload,
+      };
+    case DELETE_JOB_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        jobs: state.jobs.filter((job) => job._id !== action.payload),
+        errorMessage: null,
+      };
+    case DELETE_JOB_ERROR:
       return {
         ...state,
         isLoading: false,

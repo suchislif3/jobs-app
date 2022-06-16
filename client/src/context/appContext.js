@@ -10,13 +10,18 @@ import {
   SET_ERROR_MESSAGE,
   FETCH_JOBS_SUCCESS,
   FETCH_JOBS_ERROR,
+  CREATE_JOB_SUCCESS,
+  CREATE_JOB_ERROR,
+  DELETE_JOB_SUCCESS,
+  DELETE_JOB_ERROR,
 } from "./actionTypes";
 import reducer from "./reducer";
 
 const initialState = {
   user: null,
   isLoading: false,
-  jobs: [],
+  jobs: null,
+  singleJob: null,
   errorMessage: null,
 };
 
@@ -86,6 +91,33 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const createJob = async (jobData, clearForm) => {
+    startLoading();
+    try {
+      const { data } = await API.post(`/jobs`, jobData);
+      dispatch({ type: CREATE_JOB_SUCCESS, payload: data.job });
+      clearForm();
+    } catch (err) {
+      dispatch({
+        type: CREATE_JOB_ERROR,
+        payload: err.response.data?.msg || "Creating job failed.",
+      });
+    }
+  };
+
+  const deleteJob = async (jobId) => {
+    startLoading();
+    try {
+      await API.delete(`/jobs/${jobId}`);
+      dispatch({ type: DELETE_JOB_SUCCESS, payload: jobId });
+    } catch (err) {
+      dispatch({
+        type: DELETE_JOB_ERROR,
+        payload: err.response.data?.msg || "Deleting job failed.",
+      });
+    }
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -103,6 +135,8 @@ export const AppProvider = ({ children }) => {
         logout,
         setErrorMessage,
         fetchJobs,
+        createJob,
+        deleteJob,
       }}
     >
       {children}
