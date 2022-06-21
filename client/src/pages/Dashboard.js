@@ -27,7 +27,7 @@ const Dashboard = () => {
       >
         {showForm ? "Hide form" : "Add new job"}
       </button>
-      <Jobs />
+      {!errorMessage && <Jobs />}
     </>
   );
 };
