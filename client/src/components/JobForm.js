@@ -1,20 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormInput from "./FormInput";
 import { useGlobalContext } from "../context/appContext";
 
-const JobForm = () => {
-  const initialFormData = {
-    position: "",
-    company: "",
-    contactPerson: "",
-    location: "",
-    applicationDate: new Date().toLocaleDateString("en-CA"),
-    comment: "",
-    url: "",
-  };
-  const [isOpen, setIsOpen] = useState(false);
+const JobForm = ({ jobId }) => {
+  const { isLoading, singleJob, createJob, editJob, editComplete } =
+    useGlobalContext();
+
+  const initialFormData = jobId
+    ? singleJob
+    : {
+        position: "",
+        company: "",
+        contactPerson: "",
+        location: "",
+        applicationDate: new Date().toLocaleDateString("en-CA"),
+        comment: "",
+        url: "",
+      };
   const [formData, setFormData] = useState(initialFormData);
-  const { isLoading, createJob } = useGlobalContext();
 
   const handleChange = (e) => {
     setFormData((prevFormData) => ({
@@ -23,74 +26,80 @@ const JobForm = () => {
     }));
   };
 
-  const clearForm = () => {
+  const setInitialFormData = () => {
     setFormData(initialFormData);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createJob(formData, clearForm);
+    jobId ? editJob(jobId, formData) : createJob(formData, setInitialFormData);
   };
+
+  useEffect(() => {
+    if (singleJob) setFormData(singleJob);
+  }, [singleJob]);
 
   return (
     <>
-      {isOpen && (
-        <form onSubmit={handleSubmit}>
-          <FormInput
-            name="position"
-            value={formData.position}
-            handleChange={handleChange}
-            label="Position*"
-          />
-          <FormInput
-            name="company"
-            value={formData.company}
-            handleChange={handleChange}
-            label="Company*"
-          />
-          <FormInput
-            name="contactPerson"
-            value={formData.contactPerson}
-            handleChange={handleChange}
-            label="Contact person"
-          />
-          <FormInput
-            name="location"
-            value={formData.location}
-            handleChange={handleChange}
-            label="Location"
-          />
-          <FormInput
-            name="applicationDate"
-            type="date"
-            value={formData.applicationDate}
-            handleChange={handleChange}
-            label="Application date*"
-          />
-          <FormInput
-            name="comment"
-            value={formData.comment}
-            handleChange={handleChange}
-            label="Comment"
-          />
-          <FormInput
-            name="url"
-            type="url"
-            value={formData.url}
-            handleChange={handleChange}
-            label="URL"
-          />
-          <button type="submit" disabled={isLoading}>
-            Add job
-          </button>
-        </form>
-      )}
-      <button
-        onClick={() => {
-          setIsOpen((prev) => !prev);
-        }}
-      >
-        {isOpen ? "Hide form" : "Add new job"}
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          name="position"
+          value={formData?.position}
+          handleChange={handleChange}
+          label="Position*"
+        />
+        <FormInput
+          name="company"
+          value={formData?.company}
+          handleChange={handleChange}
+          label="Company*"
+        />
+        <FormInput
+          name="contactPerson"
+          value={formData?.contactPerson}
+          handleChange={handleChange}
+          label="Contact person"
+        />
+        <FormInput
+          name="location"
+          value={formData?.location}
+          handleChange={handleChange}
+          label="Location"
+        />
+        <FormInput
+          name="applicationDate"
+          type="date"
+          value={formData?.applicationDate}
+          handleChange={handleChange}
+          label="Application date*"
+        />
+        <FormInput
+          name="comment"
+          value={formData?.comment}
+          handleChange={handleChange}
+          label="Comment"
+        />
+        <FormInput
+          name="url"
+          type="url"
+          value={formData?.url}
+          handleChange={handleChange}
+          label="URL"
+        />
+        {jobId && (
+          <select name="status" value={formData.status} onChange={handleChange}>
+            <option value="pending">pending</option>
+            <option value="interview">interview</option>
+            <option value="declined">declined</option>
+          </select>
+        )}
+        <button type="submit" disabled={isLoading}>
+          {jobId ? "Save changes" : "Add job"}
+        </button>
+        {editComplete && <p className="success">Edit successful!</p>}
+      </form>
+      <button onClick={setInitialFormData}>
+        {jobId ? "Reset" : "Clear form"}
       </button>
     </>
   );

@@ -7,8 +7,12 @@ import {
   SET_ERROR_MESSAGE,
   FETCH_JOBS_SUCCESS,
   FETCH_JOBS_ERROR,
+  FETCH_SINGLE_JOB_SUCCESS,
+  FETCH_SINGLE_JOB_ERROR,
   CREATE_JOB_SUCCESS,
   CREATE_JOB_ERROR,
+  EDIT_JOB_SUCCESS,
+  EDIT_JOB_ERROR,
   DELETE_JOB_SUCCESS,
   DELETE_JOB_ERROR,
 } from "./actionTypes";
@@ -16,7 +20,12 @@ import {
 const reducer = (state, action) => {
   switch (action.type) {
     case START_LOADING:
-      return { ...state, isLoading: true };
+      return {
+        ...state,
+        isLoading: true,
+        errorMessage: null,
+        editComplete: false,
+      };
     case SET_USER:
       return { ...state, user: action.payload };
     case AUTH_USER_SUCCESS:
@@ -24,7 +33,6 @@ const reducer = (state, action) => {
         ...state,
         user: action.payload,
         isLoading: false,
-        errorMessage: null,
       };
     case AUTH_USER_ERROR:
       return {
@@ -49,7 +57,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         isLoading: false,
-        errorMessage: null,
         jobs: action.payload,
       };
     case FETCH_JOBS_ERROR:
@@ -58,17 +65,50 @@ const reducer = (state, action) => {
         isLoading: false,
         errorMessage: action.payload,
       };
+    case FETCH_SINGLE_JOB_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        errorMessage: null,
+        singleJob: {
+          ...action.payload,
+          applicationDate: new Date(
+            Date.parse(action.payload.applicationDate)
+          ).toLocaleDateString("en-CA"),
+        },
+      };
+    case FETCH_SINGLE_JOB_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        singleJob: null,
+        errorMessage: action.payload,
+      };
     case CREATE_JOB_SUCCESS:
       return {
         ...state,
         isLoading: false,
         jobs: [action.payload, ...state.jobs],
-        errorMessage: null,
       };
     case CREATE_JOB_ERROR:
       return {
         ...state,
         isLoading: false,
+        errorMessage: action.payload,
+      };
+    case EDIT_JOB_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        singleJob: action.payload,
+        errorMessage: null,
+        editComplete: true,
+      };
+    case EDIT_JOB_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        editComplete: false,
         errorMessage: action.payload,
       };
     case DELETE_JOB_SUCCESS:

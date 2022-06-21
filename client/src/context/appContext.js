@@ -10,8 +10,12 @@ import {
   SET_ERROR_MESSAGE,
   FETCH_JOBS_SUCCESS,
   FETCH_JOBS_ERROR,
+  FETCH_SINGLE_JOB_SUCCESS,
+  FETCH_SINGLE_JOB_ERROR,
   CREATE_JOB_SUCCESS,
   CREATE_JOB_ERROR,
+  EDIT_JOB_SUCCESS,
+  EDIT_JOB_ERROR,
   DELETE_JOB_SUCCESS,
   DELETE_JOB_ERROR,
 } from "./actionTypes";
@@ -23,6 +27,7 @@ const initialState = {
   jobs: null,
   singleJob: null,
   errorMessage: null,
+  editComplete: false,
 };
 
 const AppContext = React.createContext();
@@ -118,6 +123,32 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const fetchSingleJob = async (jobId) => {
+    startLoading();
+    try {
+      const { data } = await API.get(`/jobs/${jobId}`);
+      dispatch({ type: FETCH_SINGLE_JOB_SUCCESS, payload: data.job });
+    } catch (err) {
+      dispatch({
+        type: FETCH_SINGLE_JOB_ERROR,
+        payload: err.response.data?.msg || "Fetching data failed.",
+      });
+    }
+  };
+
+  const editJob = async (jobId, jobData) => {
+    startLoading();
+    try {
+      const { data } = await API.patch(`/jobs/${jobId}`, jobData);
+      dispatch({ type: EDIT_JOB_SUCCESS, payload: data.job });
+    } catch (err) {
+      dispatch({
+        type: EDIT_JOB_ERROR,
+        payload: err.response.data?.msg || "Editing job failed.",
+      });
+    }
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -135,7 +166,9 @@ export const AppProvider = ({ children }) => {
         logout,
         setErrorMessage,
         fetchJobs,
+        fetchSingleJob,
         createJob,
+        editJob,
         deleteJob,
       }}
     >
