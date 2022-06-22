@@ -9,12 +9,15 @@ const Navbar = () => {
 
   return (
     <Wrapper>
-      <Link to="/">JobsApp</Link>
+      <Link to="/">JobsAppLogo</Link>
       {user && (
-        <div>
-          <FaRegUserCircle /> {user}
-          <button onClick={logout}>
-            Logout <FiLogOut />
+        <div className="toolbar">
+          <span className="user">
+            <FaRegUserCircle /> {user}
+          </span>
+          <button onClick={logout} className="logout btn primary-btn">
+            <span>Logout</span>
+            <FiLogOut />
           </button>
         </div>
       )}

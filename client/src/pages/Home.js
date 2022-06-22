@@ -5,7 +5,7 @@ import main from "../assets/main.svg";
 
 const Home = () => {
   return (
-    <Page grid>
+    <Page display="grid">
       <div className="info">
         <h1>Jobs App</h1>
         <p>
@@ -14,9 +14,11 @@ const Home = () => {
           eaque eius voluptatem qui ut quia perspiciatis impedit maiores,
           pariatur debitis. Et?
         </p>
-        <Link to="/auth">Login / Register</Link>
+        <Link to="/auth" className="btn primary-btn">
+          Login
+        </Link>
       </div>
-      <img src={main} alt="job interview" />
+      <img src={main} alt="job interview" className="job-interview-img" />
     </Page>
   );
 };

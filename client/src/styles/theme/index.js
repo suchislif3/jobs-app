@@ -16,11 +16,15 @@ export const theme = {
       white: "#ffffff",
     },
     primary: {
-      main: "#709fb0",
+      main: "#0f6797",
+      dark: "#085076",
+      light: "#2E779E",
       contrastText: "#ffffff",
     },
     secondary: {
-      main: "#7E88BC",
+      main: "#08A853",
+      dark: "#02843E",
+      light: "#2DB06A",
       contrastText: "#ffffff",
     },
     grey: {
@@ -56,6 +60,7 @@ export const theme = {
     },
     fontSize: {
       main: "100%",
+      small: "0.8rem",
       h1: "3.052rem",
       h2: "2.441rem",
       h3: "1.953rem",
@@ -66,6 +71,10 @@ export const theme = {
     fontWeight: {
       main: 400,
       heading: 700,
+    },
+    letterSpacing: {
+      main: "1px",
+      large: "2px",
     },
   },
 };

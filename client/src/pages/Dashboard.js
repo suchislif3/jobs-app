@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import JobForm from "../components/JobForm";
 import Jobs from "../components/Jobs";
 import { useGlobalContext } from "../context/appContext";
+import { Page } from "../styles/App.styles";
 
 const Dashboard = () => {
   const { fetchJobs, errorMessage } = useGlobalContext();
@@ -17,18 +18,19 @@ const Dashboard = () => {
   }, [fetchJobs]);
 
   return (
-    <>
+    <Page>
       {errorMessage && <p className="error">{errorMessage}</p>}
       {showForm && <JobForm showForm={showForm} setShowForm={setShowForm} />}
       <button
         onClick={() => {
           setShowForm((prev) => !prev);
         }}
+        className="btn secondary-btn"
       >
         {showForm ? "Hide form" : "Add new job"}
       </button>
       {!errorMessage && <Jobs />}
-    </>
+    </Page>
   );
 };
 

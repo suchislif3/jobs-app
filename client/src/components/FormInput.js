@@ -1,6 +1,6 @@
 const FormInput = ({ name, label, type, value, handleChange }) => {
   return (
-    <div>
+    <div className="form-input">
       <label htmlFor={name}>{label}</label>
       <input
         name={name}

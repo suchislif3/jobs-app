@@ -34,8 +34,8 @@ const Auth = () => {
     setIsRegister((prev) => !prev);
   };
   return (
-    <Page>
-      <form onSubmit={handleSubmit}>
+    <Page display="centered">
+      <form onSubmit={handleSubmit} className="auth">
         <h4>{isRegister ? "Register" : "Login"}</h4>
         {errorMessage && <p className="error">{errorMessage}</p>}
         {isRegister && (
@@ -60,13 +60,21 @@ const Auth = () => {
           value={formData.password}
           handleChange={handleChange}
         />
-        <button type="submit">{isRegister ? "Register" : "Login"}</button>
-        <p>
-          {isRegister ? "Already have an account?" : "Don't have an account?"}
-          <button type="button" onClick={toggleIsRegister}>
+        <button type="submit" className="btn primary-btn">
+          {isRegister ? "Register" : "Login"}
+        </button>
+        <div className="auth-mode">
+          <span>
+            {isRegister ? "Already have an account?" : "Don't have an account?"}
+          </span>
+          <button
+            type="button"
+            onClick={toggleIsRegister}
+            className="btn secondary-btn"
+          >
             {isRegister ? "Login" : "Register"}
           </button>
-        </p>
+        </div>
       </form>
     </Page>
   );
