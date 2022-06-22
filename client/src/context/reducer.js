@@ -100,7 +100,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         isLoading: false,
-        singleJob: action.payload,
+        singleJob: {
+          ...action.payload,
+          applicationDate: new Date(
+            Date.parse(action.payload.applicationDate)
+          ).toLocaleDateString("en-CA"),
+        },
         errorMessage: null,
         editComplete: true,
       };
