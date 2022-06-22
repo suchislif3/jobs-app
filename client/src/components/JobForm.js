@@ -36,8 +36,8 @@ const JobForm = ({ jobId }) => {
   };
 
   useEffect(() => {
-    if (singleJob) setFormData(singleJob);
-  }, [singleJob]);
+    if (jobId && singleJob) setFormData(singleJob);
+  }, [jobId, singleJob]);
 
   return (
     <>
@@ -87,11 +87,19 @@ const JobForm = ({ jobId }) => {
           label="URL"
         />
         {jobId && (
-          <select name="status" value={formData.status} onChange={handleChange}>
-            <option value="pending">pending</option>
-            <option value="interview">interview</option>
-            <option value="declined">declined</option>
-          </select>
+          <>
+            <label htmlFor="status">Status</label>
+            <select
+              name="status"
+              id="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="pending">pending</option>
+              <option value="interview">interview</option>
+              <option value="declined">declined</option>
+            </select>
+          </>
         )}
         <button type="submit" disabled={isLoading}>
           {jobId ? "Save changes" : "Add job"}
