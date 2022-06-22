@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { FaTrashAlt, FaEdit } from "react-icons/fa";
+import { FaTrashAlt, FaEdit, FaExternalLinkAlt } from "react-icons/fa";
 
 import { useGlobalContext } from "../context/appContext";
 
@@ -28,7 +28,7 @@ const JobCard = ({
       <p>{comment}</p>
       {url && (
         <a href={url} target="_blank" rel="noreferrer">
-          job ad
+          <FaExternalLinkAlt />
         </a>
       )}
       <p>applied for on {moment(applicationDate).format("MMMM Do, YYYY")}</p>
