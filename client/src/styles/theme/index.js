@@ -46,7 +46,10 @@ export const theme = {
     },
   },
   shape: {
-    borderRadius: "5px",
+    borderRadius: {
+      main: "5px",
+      large: "15px",
+    },
   },
   sizing: {
     fixedWidth: "500px",

@@ -12,10 +12,10 @@ const Navbar = () => {
       <Link to="/">JobsAppLogo</Link>
       {user && (
         <div className="toolbar">
-          <span className="user">
+          <span className="user with-icon">
             <FaRegUserCircle /> {user}
           </span>
-          <button onClick={logout} className="logout btn primary-btn">
+          <button onClick={logout} className="logout btn primary-btn with-icon">
             <span>Logout</span>
             <FiLogOut />
           </button>

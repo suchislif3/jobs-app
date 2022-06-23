@@ -41,7 +41,7 @@ const JobForm = ({ jobId }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {jobId && <h4>Edit</h4>}
+      <h4>{jobId ? "Edit job" : "New job"}</h4>
       <FormInput
         name="position"
         value={formData?.position}

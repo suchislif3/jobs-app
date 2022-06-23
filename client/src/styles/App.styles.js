@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 export const MainContainer = styled.div`
   width: ${({ theme }) => theme.sizing.fluidWidth};
   max-width: ${({ theme }) => theme.sizing.maxWidth};
+  min-width: 200px;
   min-height: 100vh;
   margin: 0 auto;
 `;
@@ -14,6 +15,7 @@ export const Page = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 50px;
 
   ${({ display }) => {
     switch (display) {
@@ -32,7 +34,39 @@ export const Page = styled.div`
     }
   }}
 
+  form,
+  .info,
+  .auth {
+    border-top: 1px dashed ${({ theme }) => theme.palette.primary.main};
+    border-bottom: 1px dashed ${({ theme }) => theme.palette.primary.main};
+  }
+
+  form {
+    padding: 2% 0;
+    width: 100%;
+    max-width: ${({ theme }) => theme.sizing.fixedWidth};
+    h4 {
+      text-align: center;
+    }
+  }
+
+  .form-input {
+    margin: 12px 0;
+    label {
+      display: block;
+      font-size: ${({ theme }) => theme.typography.fontSize.small};
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 0.375rem 0.75rem;
+      border: 1px solid ${({ theme }) => theme.palette.grey.g400};
+      border-radius: ${({ theme }) => theme.shape.borderRadius.main};
+    }
+  }
+
   .info {
+    padding: 8% 0;
     row-gap: 1rem;
     p {
       margin-bottom: 1.5rem;
@@ -45,6 +79,7 @@ export const Page = styled.div`
   }
 
   .auth {
+    padding: 4% 0;
     .primary-btn {
       margin-top: 10px;
       width: 100%;

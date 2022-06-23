@@ -1,23 +1,26 @@
 import styled from "styled-components";
 
-export const JobsContainer = styled.div`
-  .legend {
+export const Wrapper = styled.div`
+  width: 100%;
+  h3 {
+    margin-bottom: 2%;
+  }
+  .jobs-container {
     display: flex;
-    gap: 1rem;
-    margin-top: 20px;
+    flex-direction: column;
+    gap: 5vmin;
   }
-  .pending,
-  .interview,
-  .declined {
-    padding: 3px;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    .jobs-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2vmin;
+    }
   }
-  .pending {
-    background-color: ${({ theme }) => theme.palette.jobStatus.pending};
-  }
-  .interview {
-    background-color: ${({ theme }) => theme.palette.jobStatus.interview};
-  }
-  .declined {
-    background-color: ${({ theme }) => theme.palette.jobStatus.declined};
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    .jobs-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 `;

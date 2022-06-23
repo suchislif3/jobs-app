@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
     font-size: ${({ theme }) => theme.typography.fontSize.main};
     font-weight: ${({ theme }) => theme.typography.fontWeight.main};
     line-height: 1.75;
-    border-radius: ${({ theme }) => theme.shape.borderRadius};
+    border-radius: ${({ theme }) => theme.shape.borderRadius.main};
   }
 
   h1,
@@ -25,6 +25,7 @@ export const GlobalStyle = createGlobalStyle`
   h6 {
     font-family: ${({ theme }) => theme.typography.fontFamily.heading};
     font-weight: ${({ theme }) => theme.typography.fontWeight.heading};
+    line-height: 1;
   }
 
   h1 {
@@ -53,13 +54,14 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   a {
+    color: inherit;
     text-decoration: none;
   }
 
   .btn {
     cursor: pointer;
     border: none;
-    border-radius: ${({ theme }) => theme.shape.borderRadius};
+    border-radius: ${({ theme }) => theme.shape.borderRadius.main};
     transition: all 0.3s ease;
     display: inline-block;
   }
@@ -86,43 +88,19 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
 
-  .reset-btn {
-    background-color: ${({ theme }) => theme.palette.error};
+  .reset-btn,
+  .delete-btn {
+    background-color: ${({ theme }) => `${theme.palette.error}90`};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     padding: 0.35em 0.7rem;
     font-size: ${({ theme }) => theme.typography.fontSize.small};
     letter-spacing: ${({ theme }) => theme.typography.letterSpacing.main};
     :hover {
-      filter: brightness(90%)
+      background-color: ${({ theme }) => theme.palette.error};
     }
   }
 
-  form {
-    width: 100%;
-    max-width: ${({ theme }) => theme.sizing.fixedWidth};
-    h4 {
-      text-align: center; 
-    }
-  }
-
-  .form-input {
-    margin: 12px 0;
-    label {
-      display: block;
-      font-size: ${({ theme }) => theme.typography.fontSize.small};
-    }
-    input,
-    select {
-      width: 100%;
-      padding: 0.375rem 0.75rem;
-      border: 1px solid ${({ theme }) => theme.palette.grey.g400};
-      border-radius: ${({ theme }) => theme.shape.borderRadius};
-    }
-  }
-
-  .user,
-  .logout,
-  .back {
+  .with-icon {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -136,14 +114,10 @@ export const GlobalStyle = createGlobalStyle`
     gap: 10px;
   }
 
-  /* .user,
-  .logout,
-  .back {
-    width: fit-content;
-  } */
-
   .error {
+    max-width: 100%;
     color: ${({ theme }) => theme.palette.error};
+    overflow-wrap: break-word;
   }
 
   .success {
