@@ -3,8 +3,14 @@ import FormInput from "./FormInput";
 import { useGlobalContext } from "../context/appContext";
 
 const JobForm = ({ jobId }) => {
-  const { isLoading, singleJob, createJob, editJob, editComplete } =
-    useGlobalContext();
+  const {
+    isLoading,
+    singleJob,
+    createJob,
+    editJob,
+    editComplete,
+    clientErrorMessage,
+  } = useGlobalContext();
 
   const initialFormData = jobId
     ? singleJob
@@ -47,12 +53,14 @@ const JobForm = ({ jobId }) => {
         value={formData?.position}
         handleChange={handleChange}
         label="Position*"
+        required
       />
       <FormInput
         name="company"
         value={formData?.company}
         handleChange={handleChange}
         label="Company*"
+        required
       />
       <FormInput
         name="contactPerson"
@@ -101,6 +109,7 @@ const JobForm = ({ jobId }) => {
           </select>
         </div>
       )}
+      {clientErrorMessage && <p className="error">{clientErrorMessage}</p>}
       <div className="form-btns">
         <button type="submit" disabled={isLoading} className="btn primary-btn">
           {jobId ? "Save changes" : "Add job"}

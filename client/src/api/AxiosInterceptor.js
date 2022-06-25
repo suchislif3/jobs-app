@@ -8,7 +8,7 @@ const API = axios.create({
 });
 
 export const AxiosInterceptor = ({ children }) => {
-  const { logout, setErrorMessage } = useGlobalContext();
+  const { logout, setErrorMessage, setClientErrorMessage } = useGlobalContext();
 
   useEffect(() => {
     const reqInterceptor = API.interceptors.request.use(
@@ -32,17 +32,19 @@ export const AxiosInterceptor = ({ children }) => {
         return res;
       },
       (err) => {
-        if (err?.response?.data?.message) {
-          setErrorMessage(err.response.data.message);
-        } else if (err.response.status === 401) {
+        if (err.response.status === 401) {
           logout();
-          setErrorMessage(
-            `${
-              err?.response?.data?.message === "jwt expired"
-                ? "Token expired. "
-                : ""
-            }Please sign in.`
+          setClientErrorMessage(
+            err?.response?.data?.msg === "Token expired"
+              ? "Token expired. Please sign in."
+              : err?.response?.data?.msg || "Please sign in."
           );
+        } else if (
+          err.response.status >= 400 &&
+          err.response.status < 500 &&
+          err?.response?.data?.msg
+        ) {
+          setClientErrorMessage(err.response.data.msg);
         } else {
           setErrorMessage("Something went wrong. Please try again later.");
         }
@@ -55,7 +57,7 @@ export const AxiosInterceptor = ({ children }) => {
       API.interceptors.request.eject(reqInterceptor);
       API.interceptors.response.eject(resInterceptor);
     };
-  }, [logout, setErrorMessage]);
+  }, [logout, setClientErrorMessage, setErrorMessage]);
 
   return children;
 };

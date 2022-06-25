@@ -11,7 +11,8 @@ const Auth = () => {
     password: "",
   });
   const [isRegister, setIsRegister] = useState(false);
-  const { register, login, errorMessage } = useGlobalContext();
+  const { register, login, errorMessage, clientErrorMessage } =
+    useGlobalContext();
 
   const handleChange = (e) => {
     setFormData((prevFormData) => ({
@@ -60,6 +61,7 @@ const Auth = () => {
           value={formData.password}
           handleChange={handleChange}
         />
+        {clientErrorMessage && <p className="error">{clientErrorMessage}</p>}
         <button type="submit" className="btn primary-btn">
           {isRegister ? "Register" : "Login"}
         </button>

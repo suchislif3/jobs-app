@@ -3,21 +3,19 @@ import API from "../api/AxiosInterceptor";
 
 import {
   START_LOADING,
+  STOP_LOADING,
   SET_USER,
   AUTH_USER_SUCCESS,
   LOGOUT_USER,
-  AUTH_USER_ERROR,
   SET_ERROR_MESSAGE,
+  SET_CLIENT_ERROR_MESSAGE,
   FETCH_JOBS_SUCCESS,
-  FETCH_JOBS_ERROR,
   FETCH_SINGLE_JOB_SUCCESS,
-  FETCH_SINGLE_JOB_ERROR,
+  CLEAR_SINGLE_JOB,
   CREATE_JOB_SUCCESS,
-  CREATE_JOB_ERROR,
   EDIT_JOB_SUCCESS,
-  EDIT_JOB_ERROR,
   DELETE_JOB_SUCCESS,
-  DELETE_JOB_ERROR,
+  SET_EDIT_COMPLETE,
 } from "./actionTypes";
 import reducer from "./reducer";
 
@@ -27,6 +25,7 @@ const initialState = {
   jobs: null,
   singleJob: null,
   errorMessage: null,
+  clientErrorMessage: null,
   editComplete: false,
 };
 
@@ -37,6 +36,9 @@ export const AppProvider = ({ children }) => {
 
   const startLoading = () => {
     if (!state.isLoading) dispatch({ type: START_LOADING });
+  };
+  const stopLoading = () => {
+    dispatch({ type: STOP_LOADING });
   };
 
   const storeUserInLocalStorage = (data) => {
@@ -50,6 +52,13 @@ export const AppProvider = ({ children }) => {
     dispatch({ type: SET_ERROR_MESSAGE, payload: message });
   };
 
+  const setClientErrorMessage = (message) => {
+    dispatch({ type: SET_CLIENT_ERROR_MESSAGE, payload: message });
+  };
+
+  const clearSingleJob = () => {
+    dispatch({ type: CLEAR_SINGLE_JOB });
+  };
   const register = async (userData) => {
     startLoading();
     try {
@@ -57,10 +66,7 @@ export const AppProvider = ({ children }) => {
       dispatch({ type: AUTH_USER_SUCCESS, payload: data.user.name });
       storeUserInLocalStorage(data);
     } catch (err) {
-      dispatch({
-        type: AUTH_USER_ERROR,
-        payload: err.response.data.msg || "Something went wrong.",
-      });
+      stopLoading();
     }
   };
 
@@ -71,10 +77,7 @@ export const AppProvider = ({ children }) => {
       dispatch({ type: AUTH_USER_SUCCESS, payload: data.user.name });
       storeUserInLocalStorage(data);
     } catch (err) {
-      dispatch({
-        type: AUTH_USER_ERROR,
-        payload: err.response.data?.msg || "Something went wrong.",
-      });
+      stopLoading();
     }
   };
 
@@ -89,10 +92,18 @@ export const AppProvider = ({ children }) => {
       const { data } = await API.get(`/jobs`);
       dispatch({ type: FETCH_JOBS_SUCCESS, payload: data.jobs });
     } catch (err) {
-      dispatch({
-        type: FETCH_JOBS_ERROR,
-        payload: err.response.data?.msg || "Fetching data failed.",
-      });
+      stopLoading();
+    }
+  };
+
+  const fetchSingleJob = async (jobId) => {
+    startLoading();
+    try {
+      const { data } = await API.get(`/jobs/${jobId}`);
+      dispatch({ type: FETCH_SINGLE_JOB_SUCCESS, payload: data.job });
+    } catch (err) {
+      clearSingleJob();
+      stopLoading();
     }
   };
 
@@ -103,36 +114,7 @@ export const AppProvider = ({ children }) => {
       dispatch({ type: CREATE_JOB_SUCCESS, payload: data.job });
       clearForm();
     } catch (err) {
-      dispatch({
-        type: CREATE_JOB_ERROR,
-        payload: err.response.data?.msg || "Creating job failed.",
-      });
-    }
-  };
-
-  const deleteJob = async (jobId) => {
-    startLoading();
-    try {
-      await API.delete(`/jobs/${jobId}`);
-      dispatch({ type: DELETE_JOB_SUCCESS, payload: jobId });
-    } catch (err) {
-      dispatch({
-        type: DELETE_JOB_ERROR,
-        payload: err.response.data?.msg || "Deleting job failed.",
-      });
-    }
-  };
-
-  const fetchSingleJob = async (jobId) => {
-    startLoading();
-    try {
-      const { data } = await API.get(`/jobs/${jobId}`);
-      dispatch({ type: FETCH_SINGLE_JOB_SUCCESS, payload: data.job });
-    } catch (err) {
-      dispatch({
-        type: FETCH_SINGLE_JOB_ERROR,
-        payload: err.response.data?.msg || "Fetching data failed.",
-      });
+      stopLoading();
     }
   };
 
@@ -142,10 +124,18 @@ export const AppProvider = ({ children }) => {
       const { data } = await API.patch(`/jobs/${jobId}`, jobData);
       dispatch({ type: EDIT_JOB_SUCCESS, payload: data.job });
     } catch (err) {
-      dispatch({
-        type: EDIT_JOB_ERROR,
-        payload: err.response.data?.msg || "Editing job failed.",
-      });
+      dispatch({ type: SET_EDIT_COMPLETE, payload: false });
+      stopLoading();
+    }
+  };
+
+  const deleteJob = async (jobId) => {
+    startLoading();
+    try {
+      await API.delete(`/jobs/${jobId}`);
+      dispatch({ type: DELETE_JOB_SUCCESS, payload: jobId });
+    } catch (err) {
+      stopLoading();
     }
   };
 
@@ -165,6 +155,7 @@ export const AppProvider = ({ children }) => {
         login,
         logout,
         setErrorMessage,
+        setClientErrorMessage,
         fetchJobs,
         fetchSingleJob,
         createJob,
