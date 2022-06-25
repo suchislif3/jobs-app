@@ -89,6 +89,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .reset-btn,
+  .cancel-btn,
   .delete-btn {
     background-color: ${({ theme }) => `${theme.palette.error}90`};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
