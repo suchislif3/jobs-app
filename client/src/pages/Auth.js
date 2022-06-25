@@ -11,7 +11,7 @@ const Auth = () => {
     password: "",
   });
   const [isRegister, setIsRegister] = useState(false);
-  const { register, login, errorMessage, clientErrorMessage } =
+  const { isLoading, register, login, errorMessage, clientErrorMessage } =
     useGlobalContext();
 
   const handleChange = (e) => {
@@ -62,7 +62,7 @@ const Auth = () => {
           handleChange={handleChange}
         />
         {clientErrorMessage && <p className="error">{clientErrorMessage}</p>}
-        <button type="submit" className="btn primary-btn">
+        <button type="submit" className="btn primary-btn" disabled={isLoading}>
           {isRegister ? "Register" : "Login"}
         </button>
         <div className="auth-mode">
@@ -73,6 +73,7 @@ const Auth = () => {
             type="button"
             onClick={toggleIsRegister}
             className="btn secondary-btn"
+            disabled={isLoading}
           >
             {isRegister ? "Login" : "Register"}
           </button>
