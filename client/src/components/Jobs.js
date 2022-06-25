@@ -16,7 +16,6 @@ const Jobs = () => {
       )}
       {!isLoading && jobs?.length > 0 && (
         <>
-          <h3>Jobs</h3>
           <div className="jobs-container">
             {jobs.map((job) => (
               <JobCard key={job._id} {...job} />
