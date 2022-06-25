@@ -1,4 +1,4 @@
-const FormInput = ({ name, label, type, value, handleChange }) => {
+const FormInput = ({ name, label, type, value, handleChange, required }) => {
   return (
     <div className="form-input">
       <label htmlFor={name}>{label}</label>
@@ -8,6 +8,7 @@ const FormInput = ({ name, label, type, value, handleChange }) => {
         value={value}
         id={name}
         onChange={handleChange}
+        required={required}
       />
     </div>
   );
