@@ -6,16 +6,17 @@ import { useGlobalContext } from "../context/appContext";
 import { Page } from "../styles/App.styles";
 
 const Dashboard = () => {
-  const { fetchJobs, errorMessage, setClientErrorMessage } = useGlobalContext();
+  const { fetchJobs, errorMessage, jobs, setClientErrorMessage } =
+    useGlobalContext();
   const isInitRender = useRef(true);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (isInitRender.current === true) {
+    if (isInitRender.current === true && !jobs) {
       fetchJobs();
       isInitRender.current = false;
     }
-  }, [fetchJobs]);
+  }, [fetchJobs, jobs]);
 
   const cancel = () => {
     setClientErrorMessage(null);
