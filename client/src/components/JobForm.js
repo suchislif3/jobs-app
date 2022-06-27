@@ -10,19 +10,18 @@ const JobForm = ({ jobId }) => {
     editJob,
     editComplete,
     clientErrorMessage,
+    setClientErrorMessage,
   } = useGlobalContext();
 
-  const initialFormData = jobId
-    ? singleJob
-    : {
-        position: "",
-        company: "",
-        contactPerson: "",
-        location: "",
-        applicationDate: new Date().toLocaleDateString("en-CA"),
-        comment: "",
-        url: "",
-      };
+  const initialFormData = {
+    position: "",
+    company: "",
+    contactPerson: "",
+    location: "",
+    applicationDate: new Date().toLocaleDateString("en-CA"),
+    comment: "",
+    url: "",
+  };
   const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
@@ -32,13 +31,14 @@ const JobForm = ({ jobId }) => {
     }));
   };
 
-  const setInitialFormData = () => {
-    setFormData(initialFormData);
+  const resetForm = () => {
+    setFormData(jobId ? singleJob : initialFormData);
+    setClientErrorMessage(null);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    jobId ? editJob(jobId, formData) : createJob(formData, setInitialFormData);
+    jobId ? editJob(jobId, formData) : createJob(formData, resetForm);
   };
 
   useEffect(() => {
@@ -102,6 +102,7 @@ const JobForm = ({ jobId }) => {
             id="status"
             value={formData.status}
             onChange={handleChange}
+            disabled={isLoading}
           >
             <option value="pending">pending</option>
             <option value="interview">interview</option>
@@ -116,8 +117,9 @@ const JobForm = ({ jobId }) => {
         </button>
         <button
           type="button"
-          onClick={setInitialFormData}
+          onClick={resetForm}
           className="btn reset-btn"
+          disabled={isLoading}
         >
           {jobId ? "Reset" : "Clear form"}
         </button>
