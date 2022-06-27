@@ -15,7 +15,7 @@ export const Page = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 50px;
+  padding: 50px 0;
 
   ${({ display }) => {
     switch (display) {
@@ -66,6 +66,7 @@ export const Page = styled.div`
   }
 
   .info {
+    margin-top: 40px;
     padding: 8% 0;
     row-gap: 1rem;
     p {

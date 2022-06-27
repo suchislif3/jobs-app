@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <Page display="grid">
       <div className="info">
-        <h1>Jobs App</h1>
+        <h1>Job Tracking App</h1>
         <p>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad
           cupiditate et distinctio nemo dolor? Nihil iste nesciunt consequatur,
