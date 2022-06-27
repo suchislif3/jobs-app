@@ -93,6 +93,9 @@ const reducer = (state, action) => {
       return {
         ...state,
         isLoading: false,
+        jobs: state.jobs.map((job) =>
+          job._id === action.payload._id ? action.payload : job
+        ),
         singleJob: {
           ...action.payload,
           applicationDate: new Date(
@@ -106,7 +109,7 @@ const reducer = (state, action) => {
     case SET_EDIT_COMPLETE:
       return {
         ...state,
-        editComplete: false,
+        editComplete: action.payload,
       };
     case DELETE_JOB_SUCCESS:
       return {
