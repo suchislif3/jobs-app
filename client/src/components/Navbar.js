@@ -3,13 +3,16 @@ import { useGlobalContext } from "../context/appContext";
 import { Wrapper } from "../styles/Navbar.styles";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
+import logo from "../assets/logo.svg";
 
 const Navbar = () => {
   const { user, logout } = useGlobalContext();
 
   return (
     <Wrapper>
-      <Link to="/">JobsAppLogo</Link>
+      <Link to="/" className="logo">
+        <img src={logo} alt="jobtrapp logo" />
+      </Link>
       {user && (
         <div className="toolbar">
           <span className="user with-icon">

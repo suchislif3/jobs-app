@@ -2,11 +2,18 @@ import styled from "styled-components";
 
 export const Wrapper = styled.nav`
   width: 100%;
-  height: 6rem;
+  min-height: 6rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
+
+  .logo,
+  img {
+    height: 4rem;
+    max-width: 100%;
+  }
 
   .toolbar {
     width: 100%;
