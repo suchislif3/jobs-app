@@ -88,6 +88,12 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
 
+  .add-new-btn {
+    padding: 0.425rem 0.85rem;
+    font-size: ${({ theme }) => theme.typography.fontSize.main};
+    letter-spacing: ${({ theme }) => theme.typography.letterSpacing.large};
+  }
+
   .reset-btn,
   .cancel-btn,
   .delete-btn {

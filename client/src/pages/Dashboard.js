@@ -33,7 +33,9 @@ const Dashboard = () => {
       {showForm && <JobForm showForm={showForm} setShowForm={setShowForm} />}
       <button
         onClick={handleClick}
-        className={`btn ${showForm ? "cancel-btn" : "secondary-btn"}`}
+        className={`btn ${
+          showForm ? "cancel-btn" : "secondary-btn add-new-btn"
+        }`}
       >
         {showForm ? "Cancel" : "Add new job"}
       </button>
