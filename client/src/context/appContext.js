@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useCallback } from "react";
 import API from "../api/AxiosInterceptor";
 
 import {
@@ -48,17 +48,22 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  const setErrorMessage = (message) => {
+  const setErrorMessage = useCallback((message) => {
     dispatch({ type: SET_ERROR_MESSAGE, payload: message });
-  };
+  }, []);
 
-  const setClientErrorMessage = (message) => {
+  const setClientErrorMessage = useCallback((message) => {
     dispatch({ type: SET_CLIENT_ERROR_MESSAGE, payload: message });
-  };
+  }, []);
 
-  const clearSingleJob = () => {
+  const clearSingleJob = useCallback(() => {
     dispatch({ type: CLEAR_SINGLE_JOB });
-  };
+  }, []);
+
+  const setEditComplete = useCallback((value) => {
+    dispatch({ type: SET_EDIT_COMPLETE, payload: value });
+  }, []);
+
   const register = async (userData) => {
     startLoading();
     try {
@@ -124,7 +129,7 @@ export const AppProvider = ({ children }) => {
       const { data } = await API.patch(`/jobs/${jobId}`, jobData);
       dispatch({ type: EDIT_JOB_SUCCESS, payload: data.job });
     } catch (err) {
-      dispatch({ type: SET_EDIT_COMPLETE, payload: false });
+      setEditComplete(false);
       stopLoading();
     }
   };
@@ -158,9 +163,11 @@ export const AppProvider = ({ children }) => {
         setClientErrorMessage,
         fetchJobs,
         fetchSingleJob,
+        clearSingleJob,
         createJob,
         editJob,
         deleteJob,
+        setEditComplete,
       }}
     >
       {children}
