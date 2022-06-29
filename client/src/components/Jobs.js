@@ -1,73 +1,54 @@
-import { useState } from "react";
+// import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useTheme } from "styled-components";
 
 import { useGlobalContext } from "../context/appContext";
+import useCurrentViewPort from "../hooks/useCurrentViewPort";
 import { Wrapper } from "../styles/Jobs.styles";
 import JobCard from "./JobCard";
+import Draggable from "./Draggable";
+
+const CARD_HEIGHT = 460;
 
 const Jobs = () => {
   const { jobs, isLoading } = useGlobalContext();
-  const [draggedCardId, setDraggedCardId] = useState(null);
   const theme = useTheme();
+  const { width: vw, vmin } = useCurrentViewPort();
+  const [dragOrder, setDragOrder] = useState(jobs);
+  const [draggedCardIndex, setDraggedCardIndex] = useState(null);
+  const columns = useMemo(() => {
+    if (vw >= theme.breakpoints.md) return 3;
+    if (vw >= theme.breakpoints.sm) return 2;
+    return 1;
+  }, [theme.breakpoints.md, theme.breakpoints.sm, vw]);
+  const gap = useMemo(() => 0.02 * vmin, [vmin]);
 
-  const drop = (e) => {
-    e.preventDefault();
-    const jobCard = document.getElementById(draggedCardId);
-    jobCard.style.visibility = "visible";
-    setDraggedCardId(null);
-  };
+  const cardWidth = useMemo(() => {
+    const maxWidth = Number(theme.sizing.maxWidth.slice(0, -2));
+    const result =
+      (Math.min(0.9 * vw, maxWidth) - (columns - 1) * gap) / columns;
+    return result;
+  }, [columns, gap, theme.sizing.maxWidth, vw]);
 
-  const dragOver = (e) => {
-    e.preventDefault();
-    const container = document.getElementById("jobs-container");
-    const afterElement = getAfterElement(container, e.clientX, e.clientY);
-    const draggedCard = document.getElementById(draggedCardId);
-    // const target = e.target.closest(".job-card");
-    if (afterElement == null) {
-      container.appendChild(draggedCard);
-    } else if (afterElement === draggedCard) {
-      return;
-    } else {
-      container.insertBefore(draggedCard, afterElement);
-    }
-  };
+  // get draggedCardIndex in jobs array --> depending on vw and translation
+  // calculate over which card user dragged (using card width, height, gap)
+  // add scrollX to translateX and same for Y
 
-  // const dragOver = (e) => {
-  //   e.preventDefault();
-  //   const container = document.getElementById("jobs-container");
-  //   const target = e.target;
-  //   const jobCard = document.getElementById(draggedCard);
-  //   if (target.classList.contains("job-card")) {
-  //     container.insertBefore(jobCard, target);
-  //   }
-  // };
+  const handleDrag = useCallback(
+    (translation, id) => {
+      const delta = {
+        x: Math.round(translation.x / cardWidth),
+        y: Math.round(translation.y / CARD_HEIGHT),
+      };
+    },
+    [cardWidth]
+  );
 
-  const getAfterElement = (container, x, y) => {
-    const jobCards = [...container.querySelectorAll(".job-card")];
-    return jobCards.reduce(
-      (closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offsetY = y - box.top - box.height / 2;
-        const offsetX = x - box.left - box.width / 2;
-        console.log({ offsetX, offsetY });
-        if (
-          offsetY < 0 &&
-          offsetY > closest.offsetY &&
-          offsetX < 0 &&
-          offsetX > closest.offsetX
-        ) {
-          return { offsetY: offsetY, offsetX: offsetX, element: child };
-        } else {
-          return closest;
-        }
-      },
-      { offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY }
-    ).element;
-  };
+  const handleDrop = useCallback(() => {}, []);
 
   return (
-    <Wrapper onDrop={drop} onDragOver={dragOver}>
+    <Wrapper cardHeight={CARD_HEIGHT}>
       {!isLoading && jobs?.length === 0 && (
         <p>You have no job applications yet.</p>
       )}
@@ -75,11 +56,11 @@ const Jobs = () => {
         <>
           <div id="jobs-container">
             {jobs.map((job) => (
-              <JobCard
-                key={job._id}
-                {...job}
-                setDraggedCardId={setDraggedCardId}
-              />
+              <div key={job._id} id={job._id} className="job-container">
+                <Draggable onDrag={handleDrag} onDrop={handleDrop} id={job._id}>
+                  <JobCard {...job} cardHeight={CARD_HEIGHT} />
+                </Draggable>
+              </div>
             ))}
           </div>
         </>

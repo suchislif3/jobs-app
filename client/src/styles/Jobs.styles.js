@@ -17,14 +17,19 @@ export const Wrapper = styled.div`
     gap: 5vmin;
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  .job-container {
+    position: relative;
+    height: ${({ cardHeight }) => `${cardHeight}px`};
+  }
+
+  @media (min-width: ${({ theme }) => `${theme.breakpoints.sm}px`}) {
     #jobs-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 2vmin;
     }
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: ${({ theme }) => `${theme.breakpoints.md}px`}) {
     #jobs-container {
       grid-template-columns: repeat(3, 1fr);
     }
