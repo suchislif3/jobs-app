@@ -23,7 +23,7 @@ export const Wrapper = styled.nav`
     flex-wrap: wrap;
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => `${theme.breakpoints.sm}px`}) {
     .toolbar {
       width: auto;
       gap: 25px;
