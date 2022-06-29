@@ -12,7 +12,7 @@ import { useGlobalContext } from "../context/appContext";
 import { Wrapper } from "../styles/JobCard.styles";
 
 const JobCard = ({
-  _id: id,
+  _id: jobId,
   position,
   company,
   contactPerson,
@@ -22,12 +22,30 @@ const JobCard = ({
   url,
   status,
   createdAt,
+  setDraggedCardId,
 }) => {
   const navigate = useNavigate();
   const { deleteJob } = useGlobalContext();
 
+  const dragStart = (e) => {
+    setDraggedCardId(jobId);
+    setTimeout(() => {
+      e.target.style.visibility = "hidden";
+    }, 0);
+  };
+
+  // const dragOver = (e) => {
+  //   e.stopPropagation();
+  // };
+
   return (
-    <Wrapper status={status}>
+    <Wrapper
+      id={jobId}
+      draggable="true"
+      className="job-card"
+      onDragStart={dragStart}
+      status={status}
+    >
       <div>
         <h5>{position}</h5>
         {url && (
@@ -80,7 +98,7 @@ const JobCard = ({
         </div>
         <div className="job-actions">
           <button
-            onClick={() => navigate(`/edit/${id}`)}
+            onClick={() => navigate(`/edit/${jobId}`)}
             title="Edit job"
             className="btn secondary-btn with-icon"
           >
@@ -89,7 +107,7 @@ const JobCard = ({
           </button>
           <button
             type="button"
-            onClick={() => deleteJob(id)}
+            onClick={() => deleteJob(jobId)}
             title="Delete job"
             className="btn delete-btn with-icon"
           >
