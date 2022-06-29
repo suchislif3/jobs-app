@@ -1,10 +1,10 @@
 export const theme = {
   breakpoints: {
-    xs: "0",
-    sm: "600px",
-    md: "900px",
-    lg: "1200px",
-    xl: "1536px",
+    xs: 0,
+    sm: 600,
+    md: 900,
+    lg: 1200,
+    xl: 1536,
   },
   palette: {
     background: "#f5f5f5",

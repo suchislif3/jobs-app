@@ -99,7 +99,7 @@ export const Page = styled.div`
     }
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: ${({ theme }) => `${theme.breakpoints.md}px`}) {
     ${({ display }) => {
       switch (display) {
         case "grid":
@@ -120,7 +120,7 @@ export const Page = styled.div`
       }
     }}
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => `${theme.breakpoints.sm}px`}) {
     .back span {
       display: inline;
     }
