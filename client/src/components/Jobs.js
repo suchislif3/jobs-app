@@ -1,22 +1,23 @@
 // import { useState } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useTheme } from "styled-components";
 
 import { useGlobalContext } from "../context/appContext";
 import useCurrentViewPort from "../hooks/useCurrentViewPort";
-import { Wrapper } from "../styles/Jobs.styles";
+import { Wrapper, JobContainer } from "../styles/Jobs.styles";
 import JobCard from "./JobCard";
 import Draggable from "./Draggable";
 
 const CARD_HEIGHT = 460;
 
 const Jobs = () => {
-  const { jobs, isLoading } = useGlobalContext();
   const theme = useTheme();
   const { width: vw, vmin } = useCurrentViewPort();
-  const [dragOrder, setDragOrder] = useState(jobs);
-  const [draggedCardIndex, setDraggedCardIndex] = useState(null);
+  const { jobs, isLoading } = useGlobalContext();
+  const [order, setOrder] = useState(null);
+  const [dragOrder, setDragOrder] = useState(null);
+  // const [draggedCardIndex, setDraggedCardIndex] = useState(null);
   const columns = useMemo(() => {
     if (vw >= theme.breakpoints.md) return 3;
     if (vw >= theme.breakpoints.sm) return 2;
@@ -35,20 +36,51 @@ const Jobs = () => {
   // calculate over which card user dragged (using card width, height, gap)
   // add scrollX to translateX and same for Y
 
-  const handleDrag = useCallback(
-    (translation, id) => {
-      const delta = {
-        x: Math.round(translation.x / cardWidth),
-        y: Math.round(translation.y / CARD_HEIGHT),
-      };
-    },
-    [cardWidth]
-  );
+  useEffect(() => {
+    if (jobs) setOrder([...jobs]);
+    if (jobs) setDragOrder([...jobs]);
+  }, [jobs]);
 
-  const handleDrop = useCallback(() => {}, []);
+  // const isValid = useCallback(
+  //   (index, delta) => {
+  //     if (
+  //       delta.x >= 0 - (index % 3) &&
+  //       delta.x <= Math.min(2 - (index % 3), jobs.length - 1 - index) &&
+  //       delta.y >= Math.floor(index / 3) &&
+  //       delta.y <= Math.floor((jobs.length - 1 - index) / 3)
+  //     )
+  //       return true;
+  //     return false;
+  //   },
+  //   [jobs?.length]
+  // );
+
+  // const handleDrag = useCallback(
+  //   ({ translation, id }) => {
+  //     const delta = {
+  //       x: Math.round(translation.x / cardWidth),
+  //       y: Math.round(translation.y / CARD_HEIGHT),
+  //     };
+  //     const index = order.findIndex((job) => job._id === id);
+  //     const newDragOrder = order.filter((job) => job._id !== id);
+  //     if (!isValid(index, delta)) {
+  //       return;
+  //     }
+  //     const newIndex = index + delta.x + delta.y * 3;
+  //     // if (index === newIndex) return;
+  //     const job = order[index];
+  //     newDragOrder.splice(newIndex, 0, job);
+  //     setDragOrder(newDragOrder);
+  //   },
+  //   [cardWidth, isValid, order]
+  // );
+
+  // const handleDrop = useCallback(() => {
+  //   setOrder(dragOrder);
+  // }, [dragOrder]);
 
   return (
-    <Wrapper cardHeight={CARD_HEIGHT}>
+    <Wrapper>
       {!isLoading && jobs?.length === 0 && (
         <p>You have no job applications yet.</p>
       )}
@@ -56,11 +88,17 @@ const Jobs = () => {
         <>
           <div id="jobs-container">
             {jobs.map((job) => (
-              <div key={job._id} id={job._id} className="job-container">
-                <Draggable onDrag={handleDrag} onDrop={handleDrop} id={job._id}>
+              <JobContainer
+                key={job._id}
+                id={job._id}
+                cardHeight={CARD_HEIGHT} /* position={} */
+              >
+                <Draggable
+                  /* onDrag={handleDrag} onDrop={handleDrop} */ id={job._id}
+                >
                   <JobCard {...job} cardHeight={CARD_HEIGHT} />
                 </Draggable>
-              </div>
+              </JobContainer>
             ))}
           </div>
         </>

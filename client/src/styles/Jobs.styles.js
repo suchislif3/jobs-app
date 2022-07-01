@@ -17,11 +17,6 @@ export const Wrapper = styled.div`
     gap: 5vmin;
   }
 
-  .job-container {
-    position: relative;
-    height: ${({ cardHeight }) => `${cardHeight}px`};
-  }
-
   @media (min-width: ${({ theme }) => `${theme.breakpoints.sm}px`}) {
     #jobs-container {
       display: grid;
@@ -34,4 +29,9 @@ export const Wrapper = styled.div`
       grid-template-columns: repeat(3, 1fr);
     }
   }
+`;
+
+export const JobContainer = styled.div`
+  position: relative;
+  height: ${({ cardHeight }) => `${cardHeight}px`};
 `;
