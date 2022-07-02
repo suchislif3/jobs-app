@@ -9,7 +9,7 @@ import React, {
 const POSITION = { x: 0, y: 0 };
 const TRANSITION_INTERVAL = 300;
 
-const Draggable = ({ children, onDrag, onDrop, id }) => {
+const Draggable = ({ children, onDrag, onDrop, id, setDraggedCardId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [origin, setOrigin] = useState(POSITION);
   const [translation, setTranslation] = useState(POSITION);
@@ -32,8 +32,9 @@ const Draggable = ({ children, onDrag, onDrop, id }) => {
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
+    setDraggedCardId(null);
     // onDrop();
-  }, []);
+  }, [setDraggedCardId]);
 
   useEffect(() => {
     if (isDragging) {

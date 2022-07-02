@@ -14,11 +14,20 @@ const Jobs = () => {
   const theme = useTheme();
   const { width: vw, vmin } = useCurrentViewPort();
   const { jobs, isLoading } = useGlobalContext();
-  const [order, setOrder] = useState(null);
-  // const [dragOrder, setDragOrder] = useState(null);
+  // const [order, setOrder] = useState(null);
+  const [cardPositions, setCardPositions] = useState({});
+
+  const [dragOrder, setDragOrder] = useState(null);
   // const sortedJobs = useMemo(() => sortJobs(jobs, order), [jobs, order]);
   const throttling = useRef(false);
-  // const [draggedCardIndex, setDraggedCardIndex] = useState(null);
+  const [draggedCardId, setDraggedCardId] = useState(null);
+  // let cardPositions = useMemo(() => {
+  //   let newCardPositions = {};
+  //     for (let i = 0; i < jobs.length; i++) {
+  //       newCardPositions[jobs[i]._id] = getGridPosition(i);
+  //     }
+  //   return newCardPositions
+  // }, [jobs])
 
   const columns = useMemo(() => {
     if (vw >= theme.breakpoints.md) return 3;
@@ -35,9 +44,28 @@ const Jobs = () => {
   }, [columns, gap, theme.sizing.maxWidth, vw]);
 
   useEffect(() => {
+    if (dragOrder) {
+      for (let i = 0; i < dragOrder.length; i++) {
+        if (dragOrder[i] !== draggedCardId) {
+          setCardPositions((prev) => ({
+            ...prev,
+            [dragOrder[i]]: getGridPosition(i),
+          }));
+        }
+      }
+    }
+  }, [dragOrder, draggedCardId]);
+
+  useEffect(() => {
     if (jobs) {
-      const newOrder = jobs.map((job) => job._id);
-      setOrder(newOrder);
+      // const newOrder = jobs.map((job) => job._id);
+      // setOrder(newOrder);
+      let newCardPositions = {};
+      for (let i = 0; i < jobs.length; i++) {
+        newCardPositions[jobs[i]._id] = getGridPosition(i);
+      }
+      setCardPositions(newCardPositions);
+      console.log(newCardPositions);
     }
   }, [jobs]);
 
@@ -52,6 +80,18 @@ const Jobs = () => {
     }
     return sortedJobs;
   } */
+
+  function getGridPosition(index) {
+    const gridColumn = 1 + (index % 3);
+    const gridRow = Math.floor(index / 3) + 1;
+    return { gridColumn, gridRow };
+  }
+
+  // const getIndex = (id) => {
+  //     return (
+  //       (cardPositions[id].gridRow - 1) * 3 + cardPositions[id].gridColumn - 1
+  //     );
+  //   }
 
   const isValid = useCallback(
     (index, delta) => {
@@ -74,21 +114,27 @@ const Jobs = () => {
         return;
       }
       throttling.current = true;
+      if (!draggedCardId) setDraggedCardId(jobId);
       setTimeout(() => {
         throttling.current = false;
         const delta = {
           x: Math.round(translation.x / cardWidth),
           y: Math.round(translation.y / CARD_HEIGHT),
         };
-        const jobIndex = order.indexOf(jobId);
-        if (!isValid(jobIndex, delta)) return;
-        const newOrder = order.filter((id) => id !== jobId);
+        const jobIndex =
+          (cardPositions[jobId].gridRow - 1) * 3 +
+          cardPositions[jobId].gridColumn -
+          1;
+        if (!isValid(jobIndex, delta)) return console.log("NOT VALID");
+        let newDragOrder = jobs.map((job) => job._id);
+        newDragOrder = newDragOrder.filter((id) => id !== jobId);
         const newJobIndex = jobIndex + delta.x + delta.y * 3;
-        newOrder.splice(newJobIndex, 0, jobId);
-        setOrder(newOrder);
+        newDragOrder.splice(newJobIndex, 0, jobId);
+        setDragOrder(newDragOrder);
+        // setCardPositions(prevPositions => ({...prevPositions}));
       }, 50);
     },
-    [cardWidth, isValid, order]
+    [cardPositions, cardWidth, draggedCardId, isValid, jobs]
   );
 
   // const handleDrop = useCallback(() => {
@@ -101,23 +147,21 @@ const Jobs = () => {
       {!isLoading && jobs?.length === 0 && (
         <p>You have no job applications yet.</p>
       )}
-      {!isLoading && jobs?.length > 0 && (
+      {!isLoading && Object.keys(cardPositions)?.length > 0 && (
         <>
           <div id="jobs-container">
             {jobs.map((job) => {
-              const index = order?.indexOf(job._id);
-              const gridColumn = 1 + (index % 3);
-              const gridRow = Math.floor(index / 3) + 1;
               return (
                 <JobContainer
                   key={job._id}
                   id={job._id}
                   cardHeight={CARD_HEIGHT}
-                  gridPosition={{ gridColumn, gridRow }}
+                  gridPosition={cardPositions[job._id]}
                 >
                   <Draggable
                     onDrag={handleDrag}
                     id={job._id}
+                    setDraggedCardId={setDraggedCardId}
                     // onDrop={handleDrop}
                   >
                     <JobCard {...job} cardHeight={CARD_HEIGHT} />
