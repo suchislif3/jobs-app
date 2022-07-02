@@ -23,12 +23,11 @@ const Draggable = ({ children, onDrag, onDrop, id }) => {
 
   const handleMouseMove = useCallback(
     ({ clientX, clientY }) => {
-      console.log("HANDLE MOUSE MOVE");
       const translation = { x: clientX - origin.x, y: clientY - origin.y };
       setTranslation(translation);
-      // onDrag({ translation, id });
+      onDrag({ translation, id });
     },
-    [origin]
+    [id, onDrag, origin]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -46,10 +45,13 @@ const Draggable = ({ children, onDrag, onDrop, id }) => {
 
       setTranslation(POSITION);
     }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   useEffect(() => {
-    console.log({ isDragging });
     function startTimeOut() {
       zIndexTimeoutRef.current = setTimeout(() => {
         setZIndex(1);

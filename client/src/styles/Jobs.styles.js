@@ -34,4 +34,6 @@ export const Wrapper = styled.div`
 export const JobContainer = styled.div`
   position: relative;
   height: ${({ cardHeight }) => `${cardHeight}px`};
+  grid-column: ${({ gridPosition }) => gridPosition.gridColumn || "none"};
+  grid-row: ${({ gridPosition }) => gridPosition.gridRow || "none"};
 `;
