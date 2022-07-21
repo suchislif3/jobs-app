@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useTheme } from "styled-components";
 
@@ -9,76 +9,85 @@ import JobCard from "./JobCard";
 const Jobs = () => {
   const { jobs, isLoading } = useGlobalContext();
   const [draggedCardId, setDraggedCardId] = useState(null);
+  const [draggedCard, setDraggedCard] = useState(null);
+  const [jobCards, setJobCards] = useState(null);
+  const container = useRef(null);
   const theme = useTheme();
+
+  useEffect(() => {
+    setJobCards([...document.getElementsByClassName("job-card")]);
+  }, []);
+
+  useEffect(() => {
+    setDraggedCard(document.getElementById(draggedCardId));
+  }, [draggedCardId]);
 
   const drop = (e) => {
     e.preventDefault();
-    const jobCard = document.getElementById(draggedCardId);
-    jobCard.style.visibility = "visible";
+    draggedCard.style.visibility = "visible";
+    draggedCard.style.opacity = "1";
     setDraggedCardId(null);
   };
 
   const dragOver = (e) => {
     e.preventDefault();
-    const container = document.getElementById("jobs-container");
-    const afterElement = getAfterElement(container, e.clientX, e.clientY);
-    const draggedCard = document.getElementById(draggedCardId);
-    // const target = e.target.closest(".job-card");
-    if (afterElement == null) {
-      container.appendChild(draggedCard);
-    } else if (afterElement === draggedCard) {
+
+    const closestElementData = getClosestElementData(e.clientX, e.clientY);
+    const closestElement = closestElementData.element;
+
+    if (closestElement === draggedCard) {
       return;
+    } else if (!closestElementData.after) {
+      container.current.insertBefore(draggedCard, closestElement);
     } else {
-      container.insertBefore(draggedCard, afterElement);
+      const nextSibling = closestElement.nextSibling;
+      if (!nextSibling) {
+        container.current.appendChild(draggedCard);
+      } else {
+        container.current.insertBefore(draggedCard, nextSibling);
+      }
     }
+    setJobCards([...document.getElementsByClassName("job-card")]);
   };
 
-  // const dragOver = (e) => {
-  //   e.preventDefault();
-  //   const container = document.getElementById("jobs-container");
-  //   const target = e.target;
-  //   const jobCard = document.getElementById(draggedCard);
-  //   if (target.classList.contains("job-card")) {
-  //     container.insertBefore(jobCard, target);
-  //   }
-  // };
-
-  const getAfterElement = (container, x, y) => {
-    const jobCards = [...container.querySelectorAll(".job-card")];
+  const getClosestElementData = (x, y) => {
     return jobCards.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
         const offsetY = y - box.top - box.height / 2;
         const offsetX = x - box.left - box.width / 2;
-        console.log({ offsetX, offsetY });
         if (
-          offsetY < 0 &&
-          offsetY > closest.offsetY &&
-          offsetX < 0 &&
-          offsetX > closest.offsetX
+          Math.abs(offsetY) <= Math.abs(closest.offsetY) &&
+          Math.abs(offsetX) <= Math.abs(closest.offsetX)
         ) {
-          return { offsetY: offsetY, offsetX: offsetX, element: child };
+          return {
+            offsetY: offsetY,
+            offsetX: offsetX,
+            element: child,
+            after: jobCards.indexOf(child) > jobCards.indexOf(draggedCard),
+          };
         } else {
           return closest;
         }
       },
-      { offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY }
-    ).element;
+      { offsetX: Number.POSITIVE_INFINITY, offsetY: Number.POSITIVE_INFINITY }
+    );
   };
 
   return (
-    <Wrapper onDrop={drop} onDragOver={dragOver}>
+    <Wrapper onDragOver={dragOver}>
       {!isLoading && jobs?.length === 0 && (
         <p>You have no job applications yet.</p>
       )}
       {!isLoading && jobs?.length > 0 && (
         <>
-          <div id="jobs-container">
+          <div ref={container} id="jobs-container">
             {jobs.map((job) => (
               <JobCard
                 key={job._id}
                 {...job}
                 setDraggedCardId={setDraggedCardId}
+                drop={drop}
               />
             ))}
           </div>

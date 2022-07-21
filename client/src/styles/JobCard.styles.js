@@ -10,6 +10,12 @@ export const Wrapper = styled.article`
   /* background-color: ${({ theme, status }) =>
     `${theme.palette.jobStatus[status]}80`}; */
   border: 1px dashed ${({ theme }) => theme.palette.primary.main};
+  cursor: grab;
+
+  :active {
+    cursor: grabbing;
+  }
+
   h5 {
     margin-bottom: 5%;
     text-align: center;

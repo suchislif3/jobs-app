@@ -23,6 +23,7 @@ const JobCard = ({
   status,
   createdAt,
   setDraggedCardId,
+  drop,
 }) => {
   const navigate = useNavigate();
   const { deleteJob } = useGlobalContext();
@@ -30,13 +31,9 @@ const JobCard = ({
   const dragStart = (e) => {
     setDraggedCardId(jobId);
     setTimeout(() => {
-      e.target.style.visibility = "hidden";
+      e.target.style.opacity = "0";
     }, 0);
   };
-
-  // const dragOver = (e) => {
-  //   e.stopPropagation();
-  // };
 
   return (
     <Wrapper
@@ -44,6 +41,7 @@ const JobCard = ({
       draggable="true"
       className="job-card"
       onDragStart={dragStart}
+      onDragEnd={drop}
       status={status}
     >
       <div>
