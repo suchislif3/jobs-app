@@ -40,7 +40,7 @@ export const Wrapper = styled.article`
   }
   .ellipsis-multiline {
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -48,7 +48,7 @@ export const Wrapper = styled.article`
   .status-bar {
     height: 30px;
     width: 100%;
-    margin: 30px 0;
+    margin: 28px 0;
     border-radius: 15px;
     border: 1px solid ${({ theme }) => theme.palette.primary.main};
     display: flex;
