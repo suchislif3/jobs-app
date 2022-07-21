@@ -45,7 +45,7 @@ const JobCard = ({
       status={status}
     >
       <div>
-        <h5>{position}</h5>
+        <h5 className="ellipsis">{position}</h5>
         {url && (
           <a
             href={url}
@@ -59,28 +59,30 @@ const JobCard = ({
         )}
         <div className="item">
           <ImOffice className="icon" title="company" />
-          <span>{company}</span>
+          <span className="ellipsis">{company}</span>
         </div>
         {location && (
           <div className="item">
             <MdLocationPin className="icon" title="location" />
-            <span>{location}</span>
+            <span className="ellipsis">{location}</span>
           </div>
         )}
         {contactPerson && (
           <div className="item">
             <GrContactInfo className="icon" title="contact person" />
-            <span>{contactPerson}</span>
+            <span className="ellipsis">{contactPerson}</span>
           </div>
         )}
         <div className="item">
           <BsCalendarCheck className="icon" title="application date" />
-          <span>{moment(applicationDate).format("MMMM Do, YYYY")}</span>
+          <span className="ellipsis">
+            {moment(applicationDate).format("MMMM Do, YYYY")}
+          </span>
         </div>
         {comment && (
           <div className="item">
             <GrNote className="icon" title="comment" />
-            <span>{comment}</span>
+            <span className="ellipsis-multiline">{comment}</span>
           </div>
         )}
         <span className="created-at">added {moment(createdAt).fromNow()}</span>

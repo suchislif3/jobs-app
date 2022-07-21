@@ -10,6 +10,9 @@ export const Wrapper = styled.article`
   /* background-color: ${({ theme, status }) =>
     `${theme.palette.jobStatus[status]}80`}; */
   border: 1px dashed ${({ theme }) => theme.palette.primary.main};
+  height: 460px;
+  max-width: 90vw;
+
   cursor: grab;
 
   :active {
@@ -29,6 +32,18 @@ export const Wrapper = styled.article`
     .icon {
       flex-shrink: 0;
     }
+  }
+  .ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .ellipsis-multiline {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .status-bar {
     height: 30px;

@@ -25,7 +25,6 @@ export const GlobalStyle = createGlobalStyle`
   h6 {
     font-family: ${({ theme }) => theme.typography.fontFamily.heading};
     font-weight: ${({ theme }) => theme.typography.fontWeight.heading};
-    line-height: 1;
   }
 
   h1 {
