@@ -36,17 +36,23 @@ const Jobs = () => {
     const closestElement = closestElementData.element;
 
     if (closestElement === draggedCard) {
+      console.log("SELF");
       return;
     } else if (!closestElementData.after) {
       container.current.insertBefore(draggedCard, closestElement);
+      console.log("BEFORE");
     } else {
       const nextSibling = closestElement.nextSibling;
       if (!nextSibling) {
+        console.log("APPEND");
         container.current.appendChild(draggedCard);
       } else {
+        console.log("-----AFTER-----");
         container.current.insertBefore(draggedCard, nextSibling);
       }
     }
+    draggedCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    console.log(closestElement.firstChild.firstChild.innerText);
     setJobCards([...document.getElementsByClassName("job-card")]);
   };
 
