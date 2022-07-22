@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useTheme } from "styled-components";
 
@@ -7,57 +7,42 @@ import { Wrapper } from "../styles/Jobs.styles";
 import JobCard from "./JobCard";
 
 const Jobs = () => {
-  const { jobs, isLoading } = useGlobalContext();
+  const { jobs, isLoading, saveJobsOrder } = useGlobalContext();
   const [draggedCardId, setDraggedCardId] = useState(null);
   const [draggedCard, setDraggedCard] = useState(null);
   const [jobCards, setJobCards] = useState(null);
   const [recentClosest, setRecentClosest] = useState(null);
   const container = useRef(null);
   const throttling = useRef(false);
+  const initOrder = useRef(true);
+  const timeout = useRef();
   const theme = useTheme();
 
   useEffect(() => {
     setJobCards([...document.getElementsByClassName("job-card")]);
-  }, []);
+  }, [jobs]);
+
+  const handleDebounceSaveJobsOrder = useCallback(
+    (newOrder) => {
+      clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+        saveJobsOrder(newOrder);
+      }, 2000);
+    },
+    [saveJobsOrder]
+  );
+
+  useEffect(() => {
+    const newOrder = jobCards?.map((jobCard) => jobCard.id);
+    if (newOrder && !initOrder.current && !draggedCard)
+      handleDebounceSaveJobsOrder(newOrder);
+    if (newOrder && newOrder?.length && initOrder.current)
+      initOrder.current = false;
+  }, [draggedCard, handleDebounceSaveJobsOrder, jobCards]);
 
   useEffect(() => {
     setDraggedCard(document.getElementById(draggedCardId));
   }, [draggedCardId]);
-
-  const drop = (e) => {
-    e.preventDefault();
-    draggedCard.style.visibility = "visible";
-    draggedCard.style.opacity = "1";
-    setDraggedCardId(null);
-  };
-
-  const dragOver = (e) => {
-    e.preventDefault();
-    const closestElementData = getClosestElementData(e.clientX, e.clientY);
-    const closestElement = closestElementData.element;
-    if (recentClosest?.element === closestElement && throttling.current) {
-      return;
-    }
-    throttling.current = true;
-    setRecentClosest(closestElementData);
-    setTimeout(() => {
-      throttling.current = false;
-    }, 1000);
-    if (closestElement === draggedCard) {
-      return;
-    } else if (!closestElementData.after) {
-      container.current.insertBefore(draggedCard, closestElement);
-    } else {
-      const nextSibling = closestElement.nextSibling;
-      if (!nextSibling) {
-        container.current.appendChild(draggedCard);
-      } else {
-        container.current.insertBefore(draggedCard, nextSibling);
-      }
-    }
-    draggedCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    setJobCards([...document.getElementsByClassName("job-card")]);
-  };
 
   const getClosestElementData = (x, y) => {
     return jobCards.reduce(
@@ -81,6 +66,43 @@ const Jobs = () => {
       },
       { offsetX: Number.POSITIVE_INFINITY, offsetY: Number.POSITIVE_INFINITY }
     );
+  };
+
+  const drop = (e) => {
+    e.preventDefault();
+    draggedCard.style.visibility = "visible";
+    draggedCard.style.opacity = "1";
+    setDraggedCardId(null);
+  };
+
+  const dragOver = (e) => {
+    e.preventDefault();
+    const closestElementData = getClosestElementData(e.clientX, e.clientY);
+    const closestElement = closestElementData.element;
+    // throttling added to prevent back and forth jumping cards:
+    // if the cursor gets above the same card while scrolling up to the dragged cards new position
+    if (recentClosest?.element === closestElement && throttling.current) {
+      return;
+    }
+    throttling.current = true;
+    setRecentClosest(closestElementData);
+    setTimeout(() => {
+      throttling.current = false;
+    }, 1000);
+    if (closestElement === draggedCard) {
+      return;
+    } else if (!closestElementData.after) {
+      container.current.insertBefore(draggedCard, closestElement);
+    } else {
+      const nextSibling = closestElement.nextSibling;
+      if (!nextSibling) {
+        container.current.appendChild(draggedCard);
+      } else {
+        container.current.insertBefore(draggedCard, nextSibling);
+      }
+    }
+    draggedCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    setJobCards([...document.getElementsByClassName("job-card")]);
   };
 
   return (

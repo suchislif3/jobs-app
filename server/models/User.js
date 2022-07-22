@@ -24,6 +24,12 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please provide password"],
     minLength: [6, "Password must be at least 6 characters long"],
   },
+  jobsOrder: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
 });
 
 // mongoose middlewares

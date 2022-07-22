@@ -144,6 +144,15 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const saveJobsOrder = async (newOrder) => {
+    try {
+      const { data } = await API.patch(`/jobs/saveorder`, newOrder);
+      if (!data?.success) alert("Failed to save jobs order.");
+    } catch (err) {
+      alert("Failed to save jobs order.");
+    }
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -167,6 +176,7 @@ export const AppProvider = ({ children }) => {
         createJob,
         editJob,
         deleteJob,
+        saveJobsOrder,
         setEditComplete,
       }}
     >
