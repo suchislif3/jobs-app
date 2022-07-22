@@ -11,7 +11,9 @@ const Jobs = () => {
   const [draggedCardId, setDraggedCardId] = useState(null);
   const [draggedCard, setDraggedCard] = useState(null);
   const [jobCards, setJobCards] = useState(null);
+  const [recentClosest, setRecentClosest] = useState(null);
   const container = useRef(null);
+  const throttling = useRef(false);
   const theme = useTheme();
 
   useEffect(() => {
@@ -31,28 +33,29 @@ const Jobs = () => {
 
   const dragOver = (e) => {
     e.preventDefault();
-
     const closestElementData = getClosestElementData(e.clientX, e.clientY);
     const closestElement = closestElementData.element;
-
+    if (recentClosest?.element === closestElement && throttling.current) {
+      return;
+    }
+    throttling.current = true;
+    setRecentClosest(closestElementData);
+    setTimeout(() => {
+      throttling.current = false;
+    }, 1000);
     if (closestElement === draggedCard) {
-      console.log("SELF");
       return;
     } else if (!closestElementData.after) {
       container.current.insertBefore(draggedCard, closestElement);
-      console.log("BEFORE");
     } else {
       const nextSibling = closestElement.nextSibling;
       if (!nextSibling) {
-        console.log("APPEND");
         container.current.appendChild(draggedCard);
       } else {
-        console.log("-----AFTER-----");
         container.current.insertBefore(draggedCard, nextSibling);
       }
     }
     draggedCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    console.log(closestElement.firstChild.firstChild.innerText);
     setJobCards([...document.getElementsByClassName("job-card")]);
   };
 
