@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
   }
 
   #jobs-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 5vmin;
