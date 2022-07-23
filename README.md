@@ -20,6 +20,7 @@ Track your job applications.
 - user can save and track their job applications
 - user can edit jobs
 - user can delete jobs
+- drag and drop to sort the jobs in the desired order
 
 ## built with
 
@@ -50,6 +51,7 @@ Open http://localhost:3000 in your browser to see the result.
 - mongoose middleware and custom methods
 - swagger API documentation
 - React useContext with useReducer
+- drag and drop sortable elements
 
 ## screenshots
 
