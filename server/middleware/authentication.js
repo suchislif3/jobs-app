@@ -14,6 +14,8 @@ const authenticationMiddleware = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if (error.message === "jwt expired")
+      throw new UnauthenticatedError("Token expired");
     throw new UnauthenticatedError("Authentication invalid");
   }
 };
