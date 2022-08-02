@@ -7,15 +7,21 @@ import { Wrapper } from "../styles/Jobs.styles";
 import JobCard from "./JobCard";
 
 const Jobs = () => {
-  const { jobs, isLoading, saveJobsOrder } = useGlobalContext();
+  const {
+    jobs,
+    isLoading,
+    saveJobsOrder,
+    saveJobsOrderTimeoutId,
+    setSaveJobsOrderTimeoutId,
+  } = useGlobalContext();
   const [draggedCardId, setDraggedCardId] = useState(null);
   const [draggedCard, setDraggedCard] = useState(null);
   const [jobCards, setJobCards] = useState(null);
+  const [jobsOrder, setJobsOrder] = useState(localStorage.getItem("jobsOrder"));
   const [recentClosest, setRecentClosest] = useState(null);
   const container = useRef(null);
   const throttling = useRef(false);
   const initOrder = useRef(true);
-  const timeout = useRef();
   const theme = useTheme();
 
   useEffect(() => {
@@ -24,25 +30,35 @@ const Jobs = () => {
 
   const handleDebounceSaveJobsOrder = useCallback(
     (newOrder) => {
-      clearTimeout(timeout.current);
-      timeout.current = setTimeout(() => {
-        saveJobsOrder(newOrder);
-      }, 2000);
+      clearTimeout(saveJobsOrderTimeoutId);
+      setSaveJobsOrderTimeoutId(
+        setTimeout(() => {
+          saveJobsOrder(newOrder);
+        }, 5000)
+      );
     },
-    [saveJobsOrder]
+    [saveJobsOrder, saveJobsOrderTimeoutId, setSaveJobsOrderTimeoutId]
   );
-
-  useEffect(() => {
-    const newOrder = jobCards?.map((jobCard) => jobCard.id);
-    if (newOrder && !initOrder.current && !draggedCard)
-      handleDebounceSaveJobsOrder(newOrder);
-    if (newOrder && newOrder?.length && initOrder.current)
-      initOrder.current = false;
-  }, [draggedCard, handleDebounceSaveJobsOrder, jobCards]);
 
   useEffect(() => {
     setDraggedCard(document.getElementById(draggedCardId));
   }, [draggedCardId]);
+
+  useEffect(() => {
+    const newOrder = jobCards?.map((jobCard) => jobCard.id);
+    if (
+      newOrder &&
+      !initOrder.current &&
+      !draggedCard &&
+      newOrder?.toString() !== jobsOrder?.toString()
+    ) {
+      setJobsOrder(newOrder?.toString());
+      localStorage.setItem("jobsOrder", newOrder?.toString());
+      handleDebounceSaveJobsOrder(newOrder);
+    }
+    if (newOrder && newOrder?.length && initOrder.current)
+      initOrder.current = false;
+  }, [draggedCard, handleDebounceSaveJobsOrder, jobCards, jobsOrder]);
 
   const getClosestElementData = (x, y) => {
     return jobCards.reduce(
@@ -113,7 +129,12 @@ const Jobs = () => {
       {!isLoading && jobs?.length > 0 && (
         <>
           <div ref={container} id="jobs-container">
-            {jobs.map((job) => (
+            {(jobsOrder
+              ? jobs.sort((a, b) => {
+                  return jobsOrder.indexOf(a._id) - jobsOrder.indexOf(b._id);
+                })
+              : jobs
+            ).map((job) => (
               <JobCard
                 key={job._id}
                 {...job}

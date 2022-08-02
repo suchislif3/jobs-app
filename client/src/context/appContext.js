@@ -16,6 +16,8 @@ import {
   EDIT_JOB_SUCCESS,
   DELETE_JOB_SUCCESS,
   SET_EDIT_COMPLETE,
+  SET_DATABASE_JOBS_ORDER,
+  SET_SAVE_JOBS_ORDER_TIMEOUT_ID,
 } from "./actionTypes";
 import reducer from "./reducer";
 
@@ -27,6 +29,8 @@ const initialState = {
   errorMessage: null,
   clientErrorMessage: null,
   editComplete: false,
+  databaseJobsOrder: null,
+  saveJobsOrderTimeoutId: null,
 };
 
 const AppContext = React.createContext();
@@ -64,6 +68,14 @@ export const AppProvider = ({ children }) => {
     dispatch({ type: SET_EDIT_COMPLETE, payload: value });
   }, []);
 
+  const setDatabaseJobsOrder = useCallback((jobsOrder) => {
+    dispatch({ type: SET_DATABASE_JOBS_ORDER, payload: jobsOrder });
+  }, []);
+
+  const setSaveJobsOrderTimeoutId = useCallback((timeoutId) => {
+    dispatch({ type: SET_SAVE_JOBS_ORDER_TIMEOUT_ID, payload: timeoutId });
+  }, []);
+
   const register = async (userData) => {
     startLoading();
     try {
@@ -86,8 +98,18 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const localJobsOrder = localStorage.getItem("jobsOrder");
+    if (
+      (state.saveJobsOrderTimeoutId ||
+        localJobsOrder !== state.databaseJobsOrder) &&
+      localJobsOrder
+    ) {
+      clearTimeout(state.saveJobsOrderTimeoutId);
+      await saveJobsOrder(localJobsOrder.split(","));
+    }
     localStorage.removeItem("user");
+    localStorage.removeItem("jobsOrder");
     dispatch({ type: LOGOUT_USER });
   };
 
@@ -147,7 +169,12 @@ export const AppProvider = ({ children }) => {
   const saveJobsOrder = async (newOrder) => {
     try {
       const { data } = await API.patch(`/jobs/saveorder`, newOrder);
-      if (!data?.success) alert("Failed to save jobs order.");
+      const newOrderString = newOrder.toString();
+      if (data.success) {
+        setDatabaseJobsOrder(newOrderString);
+        if (newOrderString === localStorage.getItem("jobsOrder"))
+          setSaveJobsOrderTimeoutId(null);
+      } else alert("Failed to save jobs order.");
     } catch (err) {
       alert("Failed to save jobs order.");
     }
@@ -178,6 +205,7 @@ export const AppProvider = ({ children }) => {
         deleteJob,
         saveJobsOrder,
         setEditComplete,
+        setSaveJobsOrderTimeoutId,
       }}
     >
       {children}

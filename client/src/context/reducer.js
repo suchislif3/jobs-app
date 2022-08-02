@@ -13,6 +13,8 @@ import {
   EDIT_JOB_SUCCESS,
   SET_EDIT_COMPLETE,
   DELETE_JOB_SUCCESS,
+  SET_DATABASE_JOBS_ORDER,
+  SET_SAVE_JOBS_ORDER_TIMEOUT_ID,
 } from "./actionTypes";
 
 const reducer = (state, action) => {
@@ -48,6 +50,8 @@ const reducer = (state, action) => {
         errorMessage: null,
         clientErrorMessage: null,
         editComplete: false,
+        databaseJobsOrder: null,
+        saveJobsOrderTimeoutId: null,
       };
     case SET_ERROR_MESSAGE:
       return {
@@ -117,6 +121,16 @@ const reducer = (state, action) => {
         isLoading: false,
         jobs: state.jobs.filter((job) => job._id !== action.payload),
         errorMessage: null,
+      };
+    case SET_DATABASE_JOBS_ORDER:
+      return {
+        ...state,
+        databaseJobsOrder: action.payload,
+      };
+    case SET_SAVE_JOBS_ORDER_TIMEOUT_ID:
+      return {
+        ...state,
+        saveJobsOrderTimeoutId: action.payload,
       };
     default:
       return state;
