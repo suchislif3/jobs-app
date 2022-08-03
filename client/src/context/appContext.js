@@ -101,12 +101,11 @@ export const AppProvider = ({ children }) => {
   const logout = async () => {
     const localJobsOrder = localStorage.getItem("jobsOrder");
     if (
-      (state.saveJobsOrderTimeoutId ||
-        localJobsOrder !== state.databaseJobsOrder) &&
-      localJobsOrder
+      state.saveJobsOrderTimeoutId ||
+      localJobsOrder !== state.databaseJobsOrder
     ) {
       clearTimeout(state.saveJobsOrderTimeoutId);
-      await saveJobsOrder(localJobsOrder.split(","));
+      await saveJobsOrder(localJobsOrder ? localJobsOrder.split(",") : []);
     }
     localStorage.removeItem("user");
     localStorage.removeItem("jobsOrder");
@@ -172,7 +171,10 @@ export const AppProvider = ({ children }) => {
       const newOrderString = newOrder.toString();
       if (data.success) {
         setDatabaseJobsOrder(newOrderString);
-        if (newOrderString === localStorage.getItem("jobsOrder"))
+        if (
+          newOrderString === localStorage.getItem("jobsOrder") ||
+          newOrderString.length === 0
+        )
           setSaveJobsOrderTimeoutId(null);
       } else alert("Failed to save jobs order.");
     } catch (err) {

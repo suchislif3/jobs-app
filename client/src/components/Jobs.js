@@ -13,7 +13,6 @@ const Jobs = () => {
     saveJobsOrder,
     saveJobsOrderTimeoutId,
     databaseJobsOrder,
-    setDatabaseJobsOrder,
     setSaveJobsOrderTimeoutId,
   } = useGlobalContext();
   const [draggedCardId, setDraggedCardId] = useState(null);
@@ -28,10 +27,7 @@ const Jobs = () => {
 
   useEffect(() => {
     setJobCards([...document.getElementsByClassName("job-card")]);
-    setDatabaseJobsOrder(
-      jobs?.length ? jobs?.map((job) => job._id).toString() : null
-    );
-  }, [jobs, setDatabaseJobsOrder]);
+  }, [jobs]);
 
   const handleDebounceSaveJobsOrder = useCallback(
     (newOrder) => {
@@ -58,18 +54,19 @@ const Jobs = () => {
 
   useEffect(() => {
     const newOrder = jobCards?.map((jobCard) => jobCard.id);
+    const newOrderString = newOrder?.toString();
+    const jobsOrderString = (jobsOrder || "").toString();
     if (
       newOrder &&
       !initOrder.current &&
       !draggedCard &&
-      newOrder?.toString() !== jobsOrder?.toString()
+      newOrderString !== jobsOrderString
     ) {
-      setJobsOrder(newOrder?.toString());
-      localStorage.setItem("jobsOrder", newOrder?.toString());
+      setJobsOrder(newOrderString);
+      localStorage.setItem("jobsOrder", newOrderString);
       handleDebounceSaveJobsOrder(newOrder);
     }
-    if (newOrder && newOrder?.length && initOrder.current)
-      initOrder.current = false;
+    if (newOrder && initOrder.current) initOrder.current = false;
   }, [draggedCard, handleDebounceSaveJobsOrder, jobCards, jobsOrder]);
 
   const getClosestElementData = (x, y) => {
