@@ -205,6 +205,7 @@ export const AppProvider = ({ children }) => {
         deleteJob,
         saveJobsOrder,
         setEditComplete,
+        setDatabaseJobsOrder,
         setSaveJobsOrderTimeoutId,
       }}
     >

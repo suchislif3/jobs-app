@@ -12,6 +12,8 @@ const Jobs = () => {
     isLoading,
     saveJobsOrder,
     saveJobsOrderTimeoutId,
+    databaseJobsOrder,
+    setDatabaseJobsOrder,
     setSaveJobsOrderTimeoutId,
   } = useGlobalContext();
   const [draggedCardId, setDraggedCardId] = useState(null);
@@ -26,18 +28,28 @@ const Jobs = () => {
 
   useEffect(() => {
     setJobCards([...document.getElementsByClassName("job-card")]);
-  }, [jobs]);
+    setDatabaseJobsOrder(
+      jobs?.length ? jobs?.map((job) => job._id).toString() : null
+    );
+  }, [jobs, setDatabaseJobsOrder]);
 
   const handleDebounceSaveJobsOrder = useCallback(
     (newOrder) => {
       clearTimeout(saveJobsOrderTimeoutId);
       setSaveJobsOrderTimeoutId(
-        setTimeout(() => {
-          saveJobsOrder(newOrder);
-        }, 5000)
+        newOrder.toString() !== databaseJobsOrder
+          ? setTimeout(() => {
+              saveJobsOrder(newOrder);
+            }, 5000)
+          : null
       );
     },
-    [saveJobsOrder, saveJobsOrderTimeoutId, setSaveJobsOrderTimeoutId]
+    [
+      databaseJobsOrder,
+      saveJobsOrder,
+      saveJobsOrderTimeoutId,
+      setSaveJobsOrderTimeoutId,
+    ]
   );
 
   useEffect(() => {
@@ -130,7 +142,7 @@ const Jobs = () => {
         <>
           <div ref={container} id="jobs-container">
             {(jobsOrder
-              ? jobs.sort((a, b) => {
+              ? [...jobs].sort((a, b) => {
                   return jobsOrder.indexOf(a._id) - jobsOrder.indexOf(b._id);
                 })
               : jobs
