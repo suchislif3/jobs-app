@@ -69,6 +69,9 @@ const reducer = (state, action) => {
         isLoading: false,
         errorMessage: null,
         jobs: action.payload,
+        databaseJobsOrder: action.payload?.length
+          ? action.payload.map((job) => job._id).toString()
+          : null,
       };
     case FETCH_SINGLE_JOB_SUCCESS:
       return {
